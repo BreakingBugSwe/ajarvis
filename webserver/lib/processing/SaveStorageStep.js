@@ -36,7 +36,7 @@ class SaveStorageStep extends Step {
 		const filepath = path.join(env.uploads.dir, this.recording.filename);
 
 		fs.unlink(filepath, (err) => {
-			logger.error(`Failed removing uploaded file to storage from '${filepath}' becuase`, err);
+			if (err) logger.error(`Failed removing uploaded file to storage from '${filepath}' becuase`, err);
 		});
 	}
 }
