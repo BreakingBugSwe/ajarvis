@@ -1,0 +1,60 @@
+' @file UML del Database
+' Data creazione: 2018-04-15
+' @version 0.0.1
+' @author  Tommaso Sotte
+
+@startuml
+
+' Style
+skinparam classAttributeIconSize 0
+' skinparam monochrome true
+skinparam defaultFontName Arial
+skinparam noteFontSize 10
+' skinparam linetype ortho
+skinparam style strictuml
+skinparam nodeSep 60
+scale 1100 width
+hide empty members
+
+skinparam note {
+	BackgroundColor White
+	BorderColor Black
+}
+
+' package Cron {
+' }
+abstract Cron <<abstract>> {
+	- interval : Interval
+	+ start() : void
+	+ stop() : void
+	{abstract} + execute() : void
+}
+
+class TrashOlderCron extends Cron {
+	- trash : Trash
+	- timeout : int
+	- olderThanDays : int
+	+ execute() : void
+}
+
+' package Model {
+' }
+class Trash {
+	- model : Model
+	+ moveToTrash(Id) : void
+	+ restoreFromTrash(Id) : void
+	+ emptyTrash(olderThan : Date) : void
+	+ calculateOlderThanDate(days : int) : Date
+}
+
+package "gstore-node" as GStore {
+	class Model
+}
+
+Server -> TrashOlderCron : <<create>>
+Route --> TrashOlderCron
+Route --> Trash
+TrashOlderCron o-> Trash
+Trash o-> Model
+
+@enduml

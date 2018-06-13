@@ -1,0 +1,47 @@
+# based on https://www.gitignore.io/api/node
+
+### AJarvis ###
+
+# Dev docs generata con JSDoc via `npm run generate-docs`
+docs/devdocs
+
+# No .png/.svg in docs/uml
+docs/uml/*.png
+docs/uml/*.svg
+
+### Node ###
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage
+
+# Compiled binary addons (http://nodejs.org/api/addons.html)
+build/Release
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz

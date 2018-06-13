@@ -1,0 +1,164 @@
+<main class="container">
+	{{#if failed}}
+	<div class="alert alert-danger">
+		<strong>Fallita modifica del progetto.</strong>
+		{{failed}}
+	</div>
+	{{/if}}
+
+	<form class="card" method="post">
+		<div class="card-body" id="formBody">
+			<h2 class="card-title">Modifica impostazioni</h2>
+			<div class="form-group row">
+				<label for="inputNameProj" class="col-md-3 col-form-label">Nome progetto</label>
+		    <div class="col-md-9">
+		      <input type="text" class="form-control" id="inputNameProj" name="name" value="{{project.name}}" placeholder="Nome progetto" required> <!-- value="{{project.name}}"  -->
+					<small class="form-text text-muted">
+					  Il nome del progetto deve essere unico.
+					</small>
+		    </div>
+			</div>
+			<div class="form-group row">
+				<label for="inputDescription" class="col-md-3 col-form-label">Descrizione progetto</label>
+			    <div class="col-md-9">
+			    	<textarea type="text" class="form-control" id="inputDescription" name="description" rows="2" placeholder="Inserisci la descrizione del progetto">{{project.description}}</textarea>
+			    </div>
+			</div>
+
+			<div class="form-group row">
+				<label class="col-md-3 col-form-label">Collaboratori</label>
+				<div class="col-md-9" id="collaborators">
+					{{!-- Qui verranno aggiunte le righe dei collaboratori, sopra il pulsante --}}
+					<button type="button" class="btn btn-outline-success" id="addCollab" style="white-space: normal;">Aggiungi collaboratore</button>
+				</div>
+			</div>
+			{{!-- Contiene la lista di collaboratori. Valorizzato al "submit" --}}
+			<input type="hidden" id="collabs" name="collaborators"/>
+
+			<div class="form-group row">
+				<label for="inputKeywords" class="col-md-3 col-form-label">Keywords</label>
+				<div class="col-md-9">
+					<textarea type="text" class="form-control" id="inputKeywords" name="keywords"
+						rows="2" placeholder="Acciderbolina; Protozoico; ...">{{#each project.keywords}}{{this}}; {{/each}}</textarea>
+					<small class="form-text text-muted">
+						Le keywords aiutano il riconoscimento vocale a comprendere certe parole
+						specifiche.<br>
+						Inserire le keywords separata da ";".
+					</small>
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label class="col-md-3 col-form-label" for="status">Stato</label>
+			    <div class="col-md-9">
+					<select id="inputState" class="form-control" name="status">
+						<option value="{{project.status}}" selected>
+							{{#projectStatus project.status}}{{text}} (Attuale){{/projectStatus}}
+						</option>
+
+						{{#each statuses}}
+						<option value="{{this}}">
+							{{#projectStatus this}}{{text}}{{/projectStatus}}
+						</option>
+						{{/each}}
+					</select>
+					<small class="form-text text-muted">
+						Impostando lo stato a "Chiuso", si impedirà l'aggiunta di stand-up
+						e sarà possibile eliminare il progetto.
+					</small>
+			    </div>
+			</div>
+		</div>
+
+		<div class="card-footer d-flex justify-content-between">
+			<button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#abort">
+				<i class="fa fa-undo"></i>
+				Annulla
+			</button>
+			<button type="submit" id="saveProject" class="btn btn-primary">
+				<i class="fa fa-save"></i>
+				Salva
+			</button>
+		</div>
+	</form>
+
+	<div class="card elimina border-danger">
+		<div class="card-body text-danger">
+			<h4 class="card-title">Elimina progetto</h4>
+			<p class="card-text">
+				Con questa azione l'intero progetto, compreso di tutte le sue informazioni
+				e gli stand-up registrati, verrà spostato nel cestino.
+			</p>
+		</div>
+		<div class="card-footer">
+			{{#eq project.status 'OPEN'}}
+			<div class="alert alert-warning">
+				Non è possibile cancellare un progetto ancora attivo.
+				Imposta lo stato del progetto su "Chiuso".
+			</div>
+			{{else}}
+			<button type="button" class="btn btn-outline-danger btn-block" role="button" data-toggle="modal" data-target="#delete">
+				<i class="fa fa-trash"></i>
+				Sposta nel cestino
+			</button>
+			{{/eq}}
+		</div>
+	</div>
+</main>
+
+{{> modal
+	modalId="abort"
+	modalTitle="Annulla le modifiche"
+	modalText="Proseguendo tutte le modifiche effettuate andranno perse."
+	linkRButton=true
+	rButtonClass="btn-danger"
+	href=(concat "/project/" project.entityKey.id)
+	rButtonIcon="fa-undo"
+	rButtonText="Annulla le modifiche"
+}}
+
+{{> modal
+	modalId="delete"
+	modalTitle="Sposta nel cestino"
+	modalText="Proseguendo l'intero progeto verrà spostato nel cestino, dove rimarrà per 30 giorni, salvo operaizoni manuali."
+	linkRButton=true
+	rButtonClass="btn-danger"
+	href=(concat "/project/" project.entityKey.id "/delete")
+	rButtonIcon="fa-trash"
+	rButtonText="Sposta nel cestino"
+}}
+
+{{> modal
+	modalId="removeCollab"
+	modalTitle="Rimozione collaboratore"
+	modalText="Proseguendo il collaboratore selazionato verrà eliminato.<br> Se presenti, le frasi ad esso associate manterranno il suo nominativo come autore, finché non verrà rieseguito manualmente il text mining."
+	rButtonClass="btn-danger"
+	rButtonId="confirmRemove"
+	rButtonIcon="fa-trash"
+	rButtonText="Rimuovi"
+}}
+
+<script src="/js/collaborators-form.js"></script>
+<script type="text/javascript">
+const collabs = new CollaboratorsForm({
+	$rows: $('#collaborators'),
+	$rowAdd: $('#addCollab'),
+	roles: {{{json roles}}},
+	collabs: {{{json project.collaborators}}}
+});
+
+collabs.build();
+
+$('#saveProject').click((event) => {
+	$('#collabs').val(collabs.serializeCollaborators());
+});
+
+$('#removeCollab').on('show.bs.modal', function(event) {
+	var button = $(event.relatedTarget);
+	var id = button.data('id');
+	$('#confirmRemove').on('click', function(){
+		$('#' + id).remove();
+		$('#removeCollab').modal('hide');
+	});
+})
+</script>

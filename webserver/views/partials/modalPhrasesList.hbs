@@ -1,0 +1,37 @@
+{{!--
+/**
+ * @file	Partial di handlebar per la creazione di modal
+ * Data creazione: 2018-05-18
+ * @verison	0.0.2
+ * @author	Giacomo Del Moro
+ * @author	Tommaso Sotte
+ *
+ * Il corretto funzionamento necessita di:
+ * - jQuery
+ * - chart.js (e Chart global function disponibile)
+ * - attivare i tooltip di bootstrap (data-toggle="tooltip")
+ *
+ * @param {String} modalId id del modal
+ * @param {String} modalTitle titolo del modal
+ * @param {String} modalText testo del modal
+ */
+--}}
+
+<div class="modal modal-phrasesList fade " id="{{modalId}}" tabindex="-1" role="dialog" aria-labelledby="{{modalId}}" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content {{modalClasses}}">
+			<div class="modal-header">
+				<h3 class="modal-title">{{modalTitle}}</h3>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				{{> phrasesList
+					phrases=phrases
+					projectId=projectId
+				}}
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,20 @@
+/' Cheatsheet PlantUML: https://ogom.github.io/draw_uml/plantuml/ '/
+/' Grafica '/
+
+/' hide class circle
+hide abstract circle
+hide interface circle '/
+skinparam classAttributeIconSize 0
+/' skinparam monochrome true '/
+skinparam defaultFontName Arial
+skinparam noteFontSize 10
+/' skinparam arrowFontSize 10 '/
+/' skinparam linetype ortho '/
+
+skinparam style strictuml
+hide empty members
+
+skinparam note {
+	BackgroundColor White
+	BorderColor Black
+}

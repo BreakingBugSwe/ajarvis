@@ -1,0 +1,31 @@
+@startuml
+
+' Style
+!include base.puml
+skinparam nodesep 50
+
+' Ogni classe andrebbe con il -Element accodato al nome
+class Project {
+	name : String
+	description : String
+	dateCreation : Date
+	lastEdit : Date
+	status : String
+	keywords : String[]
+	collaborators : String[]
+	deleted : Date
+}
+
+class Recording {
+	filename : String
+	dateCreation : Date
+	processState : String
+	transcript : String
+	textMining : JSON
+	deleted : Date
+}
+
+
+Project "1" -r-- "0..*" Recording
+
+@enduml

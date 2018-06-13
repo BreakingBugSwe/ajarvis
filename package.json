@@ -1,0 +1,22 @@
+{
+  "name": "ajarvis",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "postinstall": "cd webserver && npm install",
+    "start": "npm run start:webserver",
+    "start:webserver": "cd webserver && npm start",
+    "test": "npm run lint:webserver && npm run test:webserver",
+    "test:webserver": "cd webserver && npm test",
+    "lint:webserver": "eslint webserver/**/*.js",
+    "generate-docs": "jsdoc --configure .jsdoc.json --verbose"
+  },
+  "devDependencies": {
+    "eslint": "^4.14.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "jsdoc": "^3.5.5",
+    "minami": "^1.2.3",
+    "nodemon": "^1.17.1"
+  }
+}

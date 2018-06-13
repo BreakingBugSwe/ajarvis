@@ -1,0 +1,247 @@
+<main class="container">
+	<div class="row" style="margin-bottom: 1em">
+		<div class="col">
+			<a class="btn btn-sm btn-outline-secondary" href="/project/{{project.entityKey.id}}">
+				<i class="fas fa-arrow-circle-left"></i>
+				<strong>{{project.name}}</strong>
+			</a>
+		</div>
+	</div>
+
+	<div class="row row-grid">
+		<div class="col-lg-6">
+			<div class="card" id="registra">
+				<div id="recorder" class="card-body text-center">
+					<h3 class="card-title">
+						<small class="text-muted">{{dateOnlyDate today}}</small><br>
+						Registra stand-up
+					</h3>
+					<div>
+						<canvas id="waveform" width="360" height="180" hidden></canvas>
+					</div>
+					<div class="btn-group">
+						<button type="button" class="start btn btn-primary align-baseline" {{#is project.status 'CLOSED'}}disabled{{/is}}>
+							<i class="fa fa-circle"></i> Registra
+						</button>
+						<button type="button" class="pause btn btn-primary align-baseline" disabled hidden>
+							<i class="fa fa-pause"></i> Pausa
+						</button>
+						<button type="button" class="stop btn btn-primary align-baseline" disabled>
+							<i class="fa fa-stop"></i> Stop
+						</button>
+						<button type="button" class="abort btn btn-primary align-baseline" disabled>
+							<i class="fa fa-times"></i> Annulla
+						</button>
+						<button type="button" class="btn btn-secondary align-baseline" disabled>
+							<i class="fa fa-clock"></i>
+							<span class="time">00:00:00</span>
+						</button>
+					</div>
+					<p class="info italic">Premi "Registra" per iniziare la registrazione.</p>
+				</div>
+
+				{{#is project.status 'CLOSED'}}
+					<div class="card-footer">
+						<p class="alert alert-warning">
+							<strong>Non è possibile registrare nuovi stand-up in un progetto "Chiuso".</strong>
+							Per farlo, andare nelle impostazioni del progetto e impostare lo stato
+							su "Aperto".
+						</p>
+					</div>
+				{{/is}}
+			</div>
+		</div>
+
+		<div class="col-lg-6">
+			<div class="card phrases-list text-white bg-danger" id="problems">
+				<div class="card-body">
+					<div class="card-title d-flex justify-content-between">
+						<h3>Problemi irrisolti</h3>
+
+						<i class="title-icon fa fa-question-circle" data-toggle="tooltip"
+							data-placement="top" title="Problemi discussi durante durante lo standup."></i>
+					</div>
+
+					{{> phrasesList
+						phrases=project.openProblems
+					}}
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+
+{{> modal
+	modalId="modal-abort"
+	modalTitle="Annullamento registrazione"
+	modalText="Proseguendo la registrazione effettuata andrà eliminata."
+	rButtonClass="btn-danger cancel"
+	rButtonExtraData='data-dismiss="modal"'
+	rButtonIcon="fa-undo"
+	rButtonText="Annulla la registrazione"
+}}
+
+{{> modal
+	modalId="modal-rec"
+	modalTitle="Conferma registrazione"
+	modalText=""
+	leftButton=true
+	leftButtonClass="btn-outline-danger mr-auto cancel"
+	leftButtonIcon="fa-trash"
+	leftButtonText="Scarta"
+	rButtonClass="btn-primary confirm"
+	rButtonIcon="fa-upload"
+	rButtonText="Salva comunque"
+}}
+
+<script src="https://cdn.jsdelivr.net/npm/opus-recorder@4.1.0/dist/recorder.min.js"></script>
+<script src="/js/siriwaver.js"></script>
+<script src="/js/waverecorder.js"></script>
+
+<script type="text/javascript">
+const WaveRecorder = window.WaveRecorder;
+const recorder = new WaveRecorder();
+
+const $time = $('#recorder .time');
+const $start = $('#recorder .start');
+const $pause = $('#recorder .pause');
+const $stop = $('#recorder .stop');
+const $cancel = $('#recorder .abort');
+const $info = $('#recorder .info');
+const $waveform = $('#waveform');
+
+const showStart = (toggle) => {
+	$start.prop('disabled', !toggle);
+	$start.prop('hidden', !toggle);
+	$pause.prop('disabled', toggle);
+	$pause.prop('hidden', toggle);
+};
+
+const disableStopCancel = (toggle) => {
+	$stop.prop('disabled', toggle);
+	$cancel.prop('disabled', toggle);
+};
+
+recorder.onstart = () => {
+	showStart(false);
+	disableStopCancel(false);
+	$waveform.prop('hidden', false);
+	$info.text('Registrazione in corso...');
+};
+
+recorder.onresume = () => {
+	showStart(false);
+	disableStopCancel(false);
+	$info.text('Registrazione in corso...');
+};
+
+recorder.onpause = () => {
+	showStart(true);
+	disableStopCancel(false);
+	$info.text('Registrazione sospesa.');
+};
+
+recorder.onstop = () => {
+	showStart(true);
+	disableStopCancel(true);
+	$waveform.prop('hidden', true);
+	$info.text('Registrazione terminata. Verrà salvata.');
+};
+
+recorder.oncancel = () => {
+	showStart(true);
+	disableStopCancel(true);
+	$waveform.prop('hidden', true);
+	$time.text('00:00:00');
+	$info.html('Registrazione annullata. Non verrà salvata.');
+};
+
+recorder.ondata = (data) => {
+	const error = checkRecording({ duration: recorder.getTime() });
+
+	// Chiede conferma prima dell'invio se durata della registrazione non conforme
+	// alle impostazioni dell'app
+	if (error) confirmSendRecording(error, () => sendAudio(data));
+	else sendAudio(data);
+};
+
+recorder.onrecording = (data) => {
+	$time.text(data.time);
+};
+
+$('#recorder .start').click(() => recorder.resume());
+$('#recorder .pause').click(() => recorder.pause());
+$('#recorder .stop').click(() => recorder.stop());
+$('#recorder .abort').click(() => {
+	$('#modal-abort').modal('show');
+	recorder.pause();
+});
+$('#modal-abort .cancel').click(() => recorder.cancel());
+
+const modalRec = $('#modal-rec');
+
+function sendAudio(data) {
+	// Sets the audiofile as a file for the player
+	$('#player').attr('src', window.URL.createObjectURL(data));
+
+	// Sends the audiofile to the server
+	const req = new XMLHttpRequest();
+	req.open('POST', '/project/{{project.entityKey.id}}/recording/new', true);
+	const form = new FormData();
+	const dateRecording = (new Date()).toISOString();
+	form.append('audiofile', data, `${dateRecording}.wav`);
+
+	// Info sul caricamento
+	$info.text('Caricamento in corso...');
+	$info.append('<i class="fa fa-spinner fa-spin"></i>');
+	// https://developer.mozilla.org/en-US/docs/Web/Events/beforeunload
+	window.onbeforeunload = function (e) {
+		const msg = 'Caricamento del recording in corso. Se esci dalla pagina verrà annullato';
+		e.returnValue = msg;
+		return msg;
+	};
+
+	req.onload = () => {
+		$info.text('Caricamento completato.');
+		$('.fa-spinner').remove();
+		window.onbeforeunload = null;
+	};
+
+	req.send(form);
+}
+
+const minDuration = {{appSettings.min_recording_length}};
+const maxDuration = {{appSettings.max_recording_length}};
+
+function checkRecording({ duration }) {
+	// ms => s
+	const time = duration / 1000;
+
+	if (time < {{appSettings.min_recording_length}}) {
+		return `Durata della registrazione (${time}s) minore di quella impostata (${minDuration}s).`;
+	}
+	if (time > {{appSettings.max_recording_length}}) {
+		return `Durata della registrazione (${time}s) maggiore di quella impostata (${maxDuration}s).`;
+	}
+
+	return '';
+}
+
+function confirmSendRecording(msg, cb) {
+	$('#modal-rec .confirm').click(() => {
+		cb();
+		modalRec.modal('hide');
+	});
+
+	$('#modal-rec .cancel').click(() => {
+		recorder.cancel();
+		modalRec.modal('hide');
+	})
+
+	$('.modal-body', modalRec).text(msg);
+
+	// Mostra il modal; è possibile chiuderlo solo scegliendo una
+	// delle due opzioni
+	modalRec.modal({ show: true, backdrop: 'static', keyboard: false });
+}
+</script>

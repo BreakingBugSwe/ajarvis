@@ -1,0 +1,79 @@
+<main class="container">
+	{{#if failed}}
+	<div class="alert alert-danger">
+		<strong>Fallita creazione nuovo progetto.</strong>
+		{{failed}}
+	</div>
+	{{/if}}
+
+	<form class="card" method="post" action="/projects/new">
+		<div class="card-body" id="formBody">
+			<h2 class="card-title">Creazione nuovo Progetto</h2>
+			<div class="form-group row">
+				<label for="inputNameProj" class="col-md-3 col-form-label">Nome progetto</label>
+			    <div class="col-md-9">
+			    	<input type="text" class="form-control" name="name" id="inputNameProj" placeholder="Nome progetto" required>
+					<small class="form-text text-muted">
+						Il nome del progetto deve essere unico.
+					</small>
+			    </div>
+			</div>
+			<div class="form-group row">
+				<label for="inputDescription" class="col-md-3 col-form-label">Descrizione progetto</label>
+			    <div class="col-md-9">
+			    	<textarea type="text" class="form-control" name="description" id="inputDescription" rows="3" placeholder="Inserisci la descrizione del progetto"></textarea>
+			    </div>
+			</div>
+			<div class="form-group row">
+				<label class="col-md-3 col-form-label">Collaboratori</label>
+				<div class="col-md-9" id="collaborators">
+					{{!-- Qui verranno aggiunte le righe dei collaboratori, sopra il pulsante --}}
+					<button type="button" class="btn btn-outline-success" id="addCollab" style="white-space: normal;">Aggiungi collaboratore</button>
+				</div>
+			</div>
+			{{!-- Contiene la lista di collaboratori. Valorizzato al "submit" --}}
+			<input type="hidden" id="collabs" name="collaborators"/>
+		</div>
+		<div class="card-footer">
+			<button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#abort">
+				<i class="fa fa-undo"></i>
+				Annulla
+			</button>
+			<button type="submit" class="btn btn-primary float-right" id="createProject">Crea progetto</button>
+		</div>
+	</form>
+</main>
+
+{{> modal
+	modalId="abort"
+	modalTitle="Annullamento creazione"
+	modalText="Proseguendo tutte le informazioni inserite andranno perse e non verrà creato alcun progetto."
+	linkRButton=true
+	rButtonClass="btn-danger"
+	href="/"
+	rButtonIcon="fa-undo"
+	rButtonText="Annulla"
+}}
+
+<script src="/js/collaborators-form.js"></script>
+<script type="text/javascript">
+const collabs = new CollaboratorsForm({
+	$rows: $('#collaborators'),
+	$rowAdd: $('#addCollab'),
+	roles: {{{json roles}}},
+});
+
+collabs.build();
+
+$('#createProject').click((event) => {
+	$('#collabs').val(collabs.serializeCollaborators());
+});
+
+$('#addCollab').click(function() {
+	$('.remove-collab').click(function(event) {
+		var button = $(event.target);
+		var id = button.data('id');
+		$('#' + id).remove();
+	});
+});
+</script>

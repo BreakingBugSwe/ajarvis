@@ -1,0 +1,13 @@
+@startuml
+!include ../../../base.puml
+interface Command <<interface>>{
+    +execute()
+}
+
+class NewConcreteCommand implements Command{
+  -newState: State
+  +execute()
+}
+
+NewConcreteCommand -d-> Steps
+@enduml

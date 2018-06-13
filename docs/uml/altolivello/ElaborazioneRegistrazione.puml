@@ -1,0 +1,19 @@
+@startuml
+
+(*)-->"Completamento\n registrazione"
+-r->"Invio server\n Express"
+-->"Upload\n Storage"
+-l->"Salvataggio\n Datastore"
+-->"Speech-to-text"
+note right
+aggiungo dizionario
+progetto e lista
+memebri a STT
+end note
+-->"Salvataggio\n testo Datastore"
+-r->"NLP testo"
+-->"Salvataggio\n NLP"
+-l->"Text-mining"
+-->"Salvataggio\n Text-Mining"
+-r->(*)
+@enduml

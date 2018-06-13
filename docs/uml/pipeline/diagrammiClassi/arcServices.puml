@@ -1,0 +1,77 @@
+@startuml
+!include ../../base.puml
+together {
+
+
+  class TextminingStep implements ITextminingStep{
+    +textmine(...):...
+    +textmine(...):...
+  }
+  class SpeechToTextStep implements ISpeechToTextStep{
+    +transcribe(...):...
+    +transcribe(...):...
+  }
+  class SaveToStorageStep implements ISaveToStorageStep{
+    +save(...):...
+  }
+  class EditKeywordsStep implements IEditKeywordsStep{
+    +editKeyword(...):...
+  }
+  class EditTranscriptionStep implements IEditTranscriptionStep{
+    +editTranscription(...):...
+  }
+
+  interface ITextminingStep<<interface>>{
+    +textmine(...):...
+    +textmine(...):...
+  }
+  interface ISpeechToTextStep<<interface>>{
+    +transcribe(...):...
+    +transcribe(...):...
+  }
+  interface ISaveToStorageStep<<interface>>{
+    +save(...):...
+  }
+  interface IEditKeywordsStep<<interface>>{
+    +editKeyword(...):...
+  }
+  interface IEditTranscriptionStep<<interface>>{
+    +editTranscription(...):...
+  }
+
+  package GoogleCloudPlatform as GCP {
+    class GCStorage<<singleton>>
+    class GCNaturalLanguage<<singleton>>
+    class GCSpeechToText<<singleton>>
+  }
+
+  interface TextMiningAlgorithm <<interface>> {
+  }
+
+  class TextMiner implements TextMiningAlgorithm{
+
+  }
+  class RecordingStorage <<singleton>>{
+  	upload(filepath : String)
+  	delete(filename : String)
+  	retrieve(filename : String) : File
+  	getURL(filename : String) : String
+  }
+
+  package GStore {
+    class GStore
+  }
+
+  SaveToStorageStep --> GStore
+  EditKeywordsStep --> GStore
+  EditTranscriptionStep --> GStore
+  SpeechToTextStep --> GStore
+  TextminingStep --> GStore
+  TextminingStep ---> TextMiningAlgorithm
+  TextMiner -> LDA
+  TextminingStep ---> GCNaturalLanguage
+  SpeechToTextStep ---> GCSpeechToText
+  SaveToStorageStep --> RecordingStorage
+  RecordingStorage --> GCStorage
+}
+@enduml

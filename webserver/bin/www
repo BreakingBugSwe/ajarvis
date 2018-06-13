@@ -1,0 +1,75 @@
+#!/usr/bin/env node
+
+const http = require('http');
+const app = require('../app');
+
+// Port for the server
+const listenPort = normalizePort(process.env.PORT || '3000');
+app.set('port', listenPort);
+
+// Create HTTP server.
+const server = http.createServer(app);
+
+// Listen on provided port, on all network interfaces.
+server.listen(listenPort);
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ *
+ * @param {number|string} val
+ * @return {number|string|boolean}
+ */
+function normalizePort(val) {
+	const port = Number.parseInt(val, 10);
+
+	// named pipe
+	if (Number.isNaN(port))	return val;
+	// valid port number
+	if (port >= 0 && port <= 65535) return port;
+	throw new Error(`The port '${val}' is not a valid port (number between 0 and 65535) or named pipe.`);
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ *
+ * @param {Object} error
+ */
+function onError(error) {
+	if (error.syscall !== 'listen') {
+		throw error;
+	}
+
+	const bind = typeof port === 'string'
+		? `Pipe ${listenPort}`
+		: `Port ${listenPort}`;
+
+	// handle specific listen errors with friendly messages
+	/* eslint-disable no-console */
+	switch (error.code) {
+	case 'EACCES':
+		console.error(`${bind} requires elevated privileges`);
+		process.exit(1);
+		break;
+	case 'EADDRINUSE':
+		console.error(`${bind} is already in use`);
+		process.exit(1);
+		break;
+	default:
+		throw error;
+	}
+	/* eslint-enable no-console */
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+function onListening() {
+	const addr = server.address();
+	const bind = typeof addr === 'string'
+		? `pipe ${addr}`
+		: `port ${addr.port}`;
+
+	console.log(`** Server live on ${bind} **`);
+}

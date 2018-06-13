@@ -1,0 +1,56 @@
+@startuml
+
+  [-> aTextminingStep: textmine(RecordingElement):RecordingElement
+  activate aTextminingStep
+  aTextminingStep -> aRecordingModel:getTranscription():String
+  activate aRecordingModel
+  deactivate aRecordingModel
+  /'aTextminingStep -> aTextminingStep:requestNaturalLanguageAnalysis()
+  activate aTextminingStep'/
+  aTextminingStep -> NaturalLanguage: analyzeSyntax(request)
+  activate NaturalLanguage
+  deactivate NaturalLanguage
+
+  /'activate NaturalLanguage
+  NaturalLanguage --> aTextminingStep: result
+  deactivate NaturalLanguage'/
+  aTextminingStep -> aTextminingStep: lemmatize()
+  /'activate aTextminingStep
+  aTextminingStep -->aTextminingStep:result
+  deactivate aTextminingStep'/
+  aTextminingStep -> aTextminingStep:partOfSpeechTagging()
+  /'activate aTextminingStep
+  aTextminingStep-->aTextminingStep:result
+  deactivate aTextminingStep
+  aTextminingStep -->aTextminingStep:result
+  deactivate aTextminingStep'/
+  aTextminingStep -> aTextMiner: textMining()
+  activate aTextMiner
+  aTextMiner-> aTextMiner: typeAnalysis()
+  activate aTextMiner
+  aTextMiner--> aTextMiner: topics
+  deactivate aTextMiner
+  aTextMiner-> aTextMiner: getDocument()
+  activate aTextMiner
+  aTextMiner--> aTextMiner: document
+  deactivate aTextMiner
+  aTextMiner-> LDA: lda(document,topics)
+  activate LDA
+  LDA --> aTextMiner: result
+  deactivate LDA
+  aTextMiner-> aTextMiner: scoreAssignment(result)
+  aTextMiner --> aTextminingStep
+  deactivate aTextMiner
+  aTextminingStep -> aTextminingStep: getPhraseType()
+  activate aTextminingStep
+  aTextminingStep --> aTextminingStep: phraseType
+  deactivate aTextminingStep
+  aTextminingStep -> aTextminingStep: getPhraseScore()
+  activate aTextminingStep
+  aTextminingStep --> aTextminingStep: phraseScore
+  deactivate aTextminingStep
+  aTextminingStep --> anotherRecordingElement: new RecordingElement(aRecordingModel,result)
+  aTextminingStep -> GCStore: store(RecordingElement)
+  activate GCStore
+  deactivate aTextminingStep
+@enduml

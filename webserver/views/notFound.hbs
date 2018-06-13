@@ -1,0 +1,26 @@
+<main class="container">
+	<div class="alert alert-warning text-center">
+		<h1>Errore 404.</h1>
+		<p>
+			<strong>
+				Nessuna pagina trovata al percorso "<span class="text-monospace">{{url}}</span>".
+			</strong>
+			<br>
+			Se il percorso cercato dovrebbe esistere puoi contattare gli amministratori per segnalare il problema.
+		</p>
+
+		<hr>
+
+		{{#if referer}}
+		<a class="btn btn-warning" href="{{referer}}">
+			<i class="fa fa-arrow-left"></i>
+			Torna alla pagina precedente
+		</a>
+		{{/if}}
+
+		<a class="btn btn-warning" href="/">
+			<i class="fa fa-home"></i>
+			Torna alla homepage
+		</a>
+	</div>
+</main>

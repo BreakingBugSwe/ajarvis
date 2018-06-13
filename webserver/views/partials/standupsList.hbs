@@ -1,0 +1,56 @@
+{{!--
+/**
+ * @file	Partial di handlebar che mostra a .card una lista di standups/recordings
+ * Data creazione: 2018-05-17
+ * @verison	0.0.3
+ * @author	Giacomo Del Moro
+ * @author	Tommaso Sotte
+ *
+ * @param {String} cardId id della card
+ * @param {String} cardTitle titolo della card
+ * @param {[Recording]} standups array di frasi del text-mining
+ */
+--}}
+
+<div class="card standups-list {{cardClasses}}" id="{{cardId}}">
+	<div class="card-body">
+		<h3 class="card-title">
+			{{#unless cardTitle}}Registrazioni{{/unless}}
+			{{cardTitle}}
+		</h3>
+		<table class="table table-sm table-striped table-hover table-responsive-sm text-center">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col" style="width:10%">Stato</th>
+					<th scope="col">Data</th>
+					<th scope="col" class="pos"># positivi</th>
+					<th scope="col" class="neg"># problemi</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#unless standups}}
+				<tr>
+					<td colspan="4" class="italic">Nessuna registrazione esistente.</td>
+				</tr>
+				{{/unless}}
+
+				{{#each standups}}
+				<tr class="clickable-row" data-href='/project/{{../id}}/recording/{{id}}'>
+					<td>
+						{{#processState recording.processState}}
+						<span class="badge badge-pill badge-{{style}}">
+							<i class="fa {{icon}}"></i>
+						</span>
+						{{/processState}}
+					</td>
+					<th scope="row">
+						<a href='/project/{{../id}}/recording/{{id}}'>{{dateDateHours dateCreation}}</a>
+					</th>
+					<td>{{pos}}</td>
+					<td>{{neg}}</td>
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+</div>

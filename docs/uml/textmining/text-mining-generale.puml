@@ -1,0 +1,9 @@
+@startuml
+
+(*)--> "Partizionamento in frasi"
+--> "Ricoscimento collaboratori"
+-->"Determinazione tipologia frasi"
+-->"Analisi LDA sul testo"
+-->"Calcolo punteggio frasi"
+-->(*)
+@enduml

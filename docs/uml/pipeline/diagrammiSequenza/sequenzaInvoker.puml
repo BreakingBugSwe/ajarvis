@@ -1,0 +1,5 @@
+@startuml
+  aRoute ->> aCommandQueue: addCommand(c:Command)
+  ...
+  aCommandQueue -> aCommand:execute()
+@enduml

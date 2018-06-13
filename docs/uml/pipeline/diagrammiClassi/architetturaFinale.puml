@@ -1,0 +1,108 @@
+@startuml
+!include ../../base.puml
+
+interface ITextminingStep <<interface>>{
+  +textmine(...):...
+  +textmine(...):...
+}
+
+interface ISpeechToTextStep <<interface>>{
+  +transcribe(...):...
+  +transcribe(...):...
+}
+interface ISaveToStorageStep <<interface>>{
+  +save(...):...
+}
+interface IEditKeywordsStep <<interface>>{
+  +editKeyword(...):...
+}
+interface IEditTranscriptionStep <<interface>>{
+  +editTranscription(...):...
+}
+
+interface Command <<interface>>{
+    +execute()
+}
+
+class TextminingStep implements ITextminingStep{
+  +textmine(...):...
+  +textmine(...):...
+}
+interface TextMiningAlgorithm <<interface>> {
+
+}
+class SpeechToTextStep implements ISpeechToTextStep{
+  +transcribe(...):...
+  +transcribe(...):...
+}
+class SaveToStorageStep implements ISaveToStorageStep{
+  +save(...):...
+}
+class EditKeywordsStep implements IEditKeywordsStep{
+  +editKeyword(...):...
+}
+class EditTranscriptionStep implements IEditTranscriptionStep{
+  +editTranscription(...):...
+}
+
+class TextminingCommand implements Command{
+    -recordingId:Id
+    +execute()
+}
+class SpeechToTextCommand implements Command{
+    -recordingId:Id
+    +execute()
+}
+class SaveToStorageCommand implements Command{
+    -filename:String
+    +execute()
+}
+
+class EditKeywordCommand implements Command{
+    -projectId:Id
+    -keywordId:Id
+    -newKeyword:String
+    +execute()
+}
+
+class EditTranscriptionCommand implements Command{
+    -recordingId:Id
+    -newTranscription:String
+    +execute()
+}
+
+
+class CommandQueue{
+    +addCommand(Command)
+}
+
+class Route
+class TextMiner implements TextMiningAlgorithm
+
+Route -> CommandQueue
+CommandQueue o-> Command
+
+TextminingCommand --> ITextminingStep
+TextminingStep --> TextMiningAlgorithm
+SpeechToTextCommand --> ISpeechToTextStep
+    SpeechToTextCommand -->ITextminingStep
+SaveToStorageCommand --> ISaveToStorageStep
+    SaveToStorageCommand -->ISpeechToTextStep
+    SaveToStorageCommand -->ITextminingStep
+EditKeywordCommand --> IEditKeywordsStep
+    EditKeywordCommand --> ITextminingStep
+EditTranscriptionCommand -->IEditTranscriptionStep
+    EditTranscriptionCommand --> ITextminingStep
+
+    TextminingStep --> GCNaturalLanguage
+        TextMiner -> LDA
+    SpeechToTextStep -->GCSpeechToText
+    EditKeywordsStep --> GStore
+    EditTranscriptionStep --> GStore
+    SaveToStorageStep --> RecordingStorage
+    RecordingStorage --> GCStorage
+    TextminingStep --> GStore
+    SpeechToTextStep --> GStore
+    SaveToStorageStep --> GStore
+
+@enduml

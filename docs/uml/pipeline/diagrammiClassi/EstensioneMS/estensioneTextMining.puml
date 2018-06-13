@@ -1,0 +1,16 @@
+@startuml
+!include ../../../base.puml
+interface TextMiningAlgorithm <<interface>>{
+    +textMining(string text): JSON
+}
+
+class TextMiner implements TextMiningAlgorithm{
+  +textMining(string text): JSON
+}
+
+class NewTextMiner implements TextMiningAlgorithm{
+  +textMining(string text): JSON
+}
+
+TextMiner --> LDA
+@enduml

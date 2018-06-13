@@ -1,0 +1,13 @@
+@startuml
+activate aSpeechToTextCommand
+
+aSpeechToTextCommand -> aSpeechToTextStep: transcribe(idRecording:id):RecordingModel
+activate aSpeechToTextStep
+aSpeechToTextStep --> aSpeechToTextCommand: aRecordingModel
+deactivate aSpeechToTextStep
+
+aSpeechToTextCommand -> aTextminingStep: textmine(RecordingModel):RecordingModel
+activate aTextminingStep
+aTextminingStep --> aSpeechToTextCommand: aRecordingModel
+deactivate aTextminingStep
+@enduml

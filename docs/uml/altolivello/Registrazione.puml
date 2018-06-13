@@ -1,0 +1,24 @@
+@startuml
+
+start
+:Apertura pagina\n di un progetto;
+:Pressione del\n tasto Play;
+:Registrazione\n stand-up;
+fork
+:Clessidra;
+:Interruzione\nautomatica\nregistrazione;
+fork again
+:Pressione del\n tasto Stop;
+fork again
+:Pressione del\n tasto Annulla;
+end
+end fork
+:Elaborazione registrazione;
+:Visualizzazione risultati;
+stop
+
+@enduml
+
+"Clessidra"-->"Interruzione automatica registrazione"
+"Interruzione automatica registrazione"-->===A2===
+===A2===-->(*)

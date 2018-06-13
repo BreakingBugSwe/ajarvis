@@ -1,0 +1,44 @@
+{{!--
+/**
+ * @file	Partial di handlebar che mostra a una lista di frasi
+ * Data creazione: 2018-05-16
+ * @verison	0.0.3
+ * @author	Giacomo Del Moro
+ * @author	Tommaso Sotte
+ *
+ * @param {[Phrase]} phrases array di frasi del text-mining
+ * @param {String|Number} projectId (opzionale) gli elementi della lista indirizzeranno al recording
+ */
+--}}
+
+<div class="list-group">
+	{{#unless phrases}}
+	<p class="list-group-item list-colored-card">
+		Nessuna frase rilevata.
+	</p>
+	{{/unless}}
+
+	{{#each phrases}}
+		{{#if ../projectId}}
+		<a href="/project/{{../projectId}}/recording/{{recordingId}}" class="list-group-item list-colored-card">
+		{{else}}
+		<div class="list-group-item list-colored-card">
+		{{/if}}
+
+			<p class="mb-1 text"><strong>{{text}}</strong></p>
+
+			<div class="d-flex w-100 justify-content-between">
+				<small>
+					Autore: {{name}}
+					{{#unless name}}(Sconosciuto){{/unless}}
+				</small>
+				<small>Punteggio: {{score}}</small>
+			</div>
+
+		{{#if ../projectId}}
+		</a>
+		{{else}}
+		</div>
+		{{/if}}
+	{{/each}}
+</div>

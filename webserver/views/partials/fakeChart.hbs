@@ -1,0 +1,77 @@
+{{!--
+/**
+ * @file	Partial di handlebar che mostra un chart finto
+ * Data creazione: 2018-05-16
+ * @verison	0.0.2
+ * @author	Giacomo Del Moro
+ * @author	Tommaso Sotte
+ *
+ * Il corretto funzionamento necessita di:
+ * - jQuery
+ * - chart.js (e Chart global function disponibile)
+ *
+ * @param {String} chartId (opzionale) crea un chart con Chart.js con quell'id
+ * @param {Boolean} chartReverse (opzionale) inverte l'ordine del dataset del chart
+ */
+--}}
+
+<canvas id="{{chartId}}" height="120px"></canvas>
+
+<script type="text/javascript">
+// Loads after Chart.js and the whole DOM has been rendered
+$(function () {
+	if (typeof Chart !== 'function') {
+		console.error('Chart (global function) from chart.js not found.');
+		return;
+	}
+
+	const options = {
+		legend: {
+			display: false,
+		},
+		scales: {
+			xAxes: [{
+				display: false,
+				gridLines: {
+					display: false,
+				},
+				ticks: {
+					padding: 5,
+				},
+			}],
+			yAxes: [{
+				display: false,
+				offset: true,
+				gridLines: {
+					display: false,
+				},
+				ticks: {
+					padding: 5,
+					beginAtZero: true,
+				},
+			}],
+		},
+	};
+
+	const elem = document.getElementById('{{chartId}}');
+	const labels = ['0', '0', '0', '0', '0', '0'];
+	const dataset = [3, 6, 4, 5, 2, 1]{{#if chartReverse}}.reverse(){{/if}};
+
+	// NOTE Non ci serve controllo sul chart una volta creato
+	new Chart(elem, {
+		type: 'line',
+		data: {
+			labels,
+			datasets: [{
+				data: dataset,
+				borderWidth: 2,
+				pointRadius: 0,
+				fill: true,
+				backgroundColor: 'rgba(255, 255, 255, 0.2)',
+				borderColor: 'rgb(255, 255, 255)',
+			}],
+		},
+		options,
+	});
+});
+</script>

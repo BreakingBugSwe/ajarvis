@@ -1,0 +1,73 @@
+{{!--
+/**
+ * @file	Partial di handlebar per la creazione di modal
+ * Data creazione: 2018-05-18
+ * @verison	0.0.2
+ * @author	Giacomo Del Moro
+ * @author	Tommaso Sotte
+ *
+ * Il corretto funzionamento necessita di:
+ * - jQuery
+ * - chart.js (e Chart global function disponibile)
+ * - attivare i tooltip di bootstrap (data-toggle="tooltip")
+ *
+ * @param {String} modalId id del modal
+ * @param {String} modalTitle titolo del modal
+ * @param {String} modalText testo del modal
+ * @param {boolean} leftButton il pulsante a sinistra non è 'Chiudi'
+ * @param {String} leftButtonClass classe del pulsante di sinistra
+ * @param {String} leftButtonId id del pulsante di sinistra
+ * @param {String} lButtonIcon icona del pulsante di sinistra
+ * @param {String} leftButtonText testo del pulsante di sinistra
+ * @param {boolean} linkRButton il pulsante di destra è un link con href
+ * @param {String} href link del pulsante di destra
+ * @param {String} rButtonClass classe del pulsante di destra
+ * @param {String} rButtonId id del pulsante di destra
+ * @param {String} rButtonExtraData data-* da aggiungere al pulsante di destra
+ * @param {String} rButtonIcon icona del pulsante di destra
+ * @param {String} rButtonText testo del pulsante di destra
+ */
+--}}
+
+<div class="modal fade" id="{{modalId}}" tabindex="-1" role="dialog" aria-labelledby="{{modalId}}" data-backdrop="static" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 class="modal-title" id="{{modalId}}">{{modalTitle}}</h3>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				{{{modalText}}} <br> Continuare?
+			</div>
+			<div class="modal-footer">
+				{{#if leftButton}}
+					<button type="submit" class="btn {{leftButtonClass}}" id="{{leftButtonId}}">
+						{{#if lButtonIcon}}
+							<i class="fa {{leftButtonIcon}}"></i>
+						{{/if}}
+						{{leftButtonText}}
+					</button>
+				{{else}}
+					<button type="button" class="btn btn-outline-secondary mr-auto" data-dismiss="modal">Chiudi</button>
+				{{/if}}
+				{{#if linkRButton}}
+					<a class="btn {{rButtonClass}}" href="{{href}}" role="button" {{{rButtonExtraData}}}>
+						{{#if rButtonIcon}}
+							<i class="fa {{rButtonIcon}}"></i>
+						{{/if}}
+						{{rButtonText}}
+					</a>
+				{{else}}
+					<button type="submit" class="btn {{rButtonClass}}" id="{{rButtonId}}" {{{rButtonExtraData}}}>
+						{{#if rButtonIcon}}
+							<i class="fa {{rButtonIcon}}"></i>
+						{{/if}}
+						{{rButtonText}}
+					</button>
+				{{/if}}
+			</div>
+		</div>
+	</div>
+</div>

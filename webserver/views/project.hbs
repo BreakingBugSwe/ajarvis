@@ -1,0 +1,315 @@
+<main class="container-fluid">
+	<div class="row justify-content-end">
+		<div class="sidebar col-lg-2 bg-secondary" id="mainSidebar">
+			<nav class="sidenav nav text-white">
+				<div class="sidenav-head">
+					<h3 class="text-center">{{project.name}}</h3>
+					<a class="nav-link nav-link-success" href="/project/{{project.entityKey.id}}/recording/new"><i class="fa fa-plus-square"></i>Registra stand-up</a>
+				</div>
+				<div class="sidenav-separator"></div>
+				<div class="sidenav-body">
+					<a class="nav-link" href="#progress"><i class="fas fa-chart-area"></i>Stato di avanzamento</a>
+					<a class="nav-link" href="#lista"><i class="fa fa-list-ul"></i>Registrazioni effettuate</a>
+					<a class="nav-link" href="#topProblems"><i class="fa fa-times-circle"></i>Problemi irrisolti</a>
+					<a class="nav-link" href="#tasks"><i class="fa fa-check-circle"></i>Task completati</a>
+					<a class="nav-link" href="#collaborators"><i class="fa fa-user-circle"></i>Collaboratori</a>
+					<a class="nav-link" href="#info"><i class="fa fa-info-circle"></i>Informazioni</a>
+				</div>
+				<div class="sidenav-separator"></div>
+				<div class="sidenav-footer">
+					<a class="nav-link nav-link-danger" href="/project/{{project.entityKey.id}}/trash"><i class="fa fa-trash"></i>Stand-up eliminati</a>
+					<a class="nav-link nav-link-info" href="/project/{{project.entityKey.id}}/settings"><i class="fa fa-cog"></i>Impostazioni</a>
+				</div>
+			</nav>
+			<button class="sidebar-btn btn" onclick="toggleSidebar('#mainSidebar')">
+				<i class="fa fa-chevron-right"></i>
+			</button>
+		</div>
+
+		<div class="corpo col-lg-10">
+			<div class="masonry-item col-md-6">
+				<div class="card" id="progress">
+					<div class="card-body">
+						<h3 class="card-title">Stato di avanzamento</h3>
+						<canvas id="graficoStandUp"></canvas>
+
+						{{#unless standups}}
+						<div class="alert alert-secondary">
+							Non ci sono dati da visualizzare.
+							<a href="/project/{{project.entityKey.id}}/recording/new">Registra</a>
+							almeno una stand-up.
+						</div>
+						{{/unless}}
+					</div>
+				</div>
+			</div>
+
+			<div class="masonry-item col-md-6">
+				<div class="card" id="lista">
+					<div class="card-body">
+						<h3 class="card-title">Registrazioni effettuate</h3>
+						<table class="table table-sm table-striped table-hover table-responsive-sm text-center">
+							<thead class="thead-dark">
+								<tr>
+									<th scope="col">Stand-up</th>
+									<th scope="col" class="pos"># soluzioni</th>
+									<th scope="col" class="neg"># problemi</th>
+								</tr>
+							</thead>
+							<tbody>
+								{{#unless standups}}
+								<tr>
+									<td colspan="3" class="italic">Nessuna registrazione esistente.</td>
+								</tr>
+								{{/unless}}
+
+								{{#each (limit standups 10)}}
+								<tr class="clickable-row" data-href='/project/{{../id}}/recording/{{id}}'>
+									<th scope="row">
+										<a href='/project/{{../id}}/recording/{{id}}'>
+											{{#processState processState}}
+											<span class="badge badge-pill badge-{{style}}">
+												<i class="fa {{icon}}"></i>
+											</span>
+											{{/processState}}
+											{{dateDateHours dateCreation}}
+										</a>
+									</th>
+									<td>{{solved}}</td>
+									<td>{{problems}}</td>
+								</tr>
+								{{/each}}
+							</tbody>
+						</table>
+						{{#if standups}}
+						<a class="btn btn-block btn-outline-primary" href="/project/{{project.entityKey.id}}/recordings">
+							Mostra tutte ({{length standups}})
+						</a>
+						{{/if}}
+					</div>
+				</div>
+			</div>
+
+			<div class="masonry-item col-md-6">
+				<div class="card phrases-list text-white bg-danger" id="problems">
+					<div class="card-body">
+						<div class="card-title d-flex justify-content-between">
+							<h3>Problemi irrisolti</h3>
+
+							<i class="title-icon fa fa-question-circle" data-toggle="tooltip"
+								data-placement="top" title="Problemi ancora irrisolti discussi durante le registrazioni degli standup."></i>
+						</div>
+
+						{{> phrasesList
+							phrases=(limit (sortByProp problems "score" true) 5)
+							projectId=project.entityKey.id
+						}}
+
+						{{#if problems}}
+						<button type="button" class="btn btn-block btn-outline-light mt-3" onclick="$('#problemsAll').modal('show')">
+							Mostra tutti ({{length problems}})
+						</button>
+
+						{{> modalPhrasesList
+							modalId="problemsAll"
+							modalClasses="text-white bg-danger"
+							modalTitle="Problemi irrisolti"
+							phrases=(sortByProp problems "date" true)
+							projectId=project.entityKey.id
+						}}
+						{{/if}}
+					</div>
+
+
+					{{> fakeChart
+						chartId="problemsChart"
+					}}
+				</div>
+			</div>
+
+			<div class="masonry-item col-md-6">
+				<div class="card phrases-list text-white bg-primary" id="tasks">
+					<div class="card-body">
+						<div class="card-title d-flex justify-content-between">
+							<h3>Task completati</h3>
+
+							<i class="title-icon fa fa-question-circle" data-toggle="tooltip"
+								data-placement="top" title="Attività discusse come completate durante le registrazioni degli standup."></i>
+						</div>
+
+						{{> phrasesList
+							phrases=(limit (sortByProp tasks "date" true) 5)
+							projectId=project.entityKey.id
+						}}
+
+						{{#if tasks}}
+						<button type="button" class="btn btn-block btn-outline-light mt-3" onclick="$('#taskAll').modal('show')">
+							Mostra tutti ({{length tasks}})
+						</button>
+
+						{{> modalPhrasesList
+							modalId="taskAll"
+							modalClasses="text-white bg-primary"
+							modalTitle="Task completati"
+							phrases=(sortByProp tasks "date" true)
+							projectId=project.entityKey.id
+						}}
+						{{/if}}
+					</div>
+
+
+					{{> fakeChart
+						chartId="completedTasksChart"
+						chartReverse=true
+					}}
+				</div>
+			</div>
+
+			<div class="masonry-item col-md-6">
+				<div class="card" id="collaborators">
+					<div class="card-body">
+						<div class="card-title spaced">
+							<h3>Collaboratori</h3>
+							<a class="fa fa-edit title-icon" href="/project/{{project.entityKey.id}}/settings"></a>
+						</div>
+						<div class="list-group">
+							{{#unless project.collaborators}}
+							<p class="list-group-item list-group-item-action flex-column align-items-start">
+								Nessun collaboratore aggiunto.
+							</p>
+							{{/unless}}
+
+							{{#each project.collaborators}}
+							<div class="list-group-item list-group-item-action flex-column align-items-start align-bottom">
+							    <div class="d-flex w-100 justify-content-between">
+							      <strong>{{name}}</strong>
+							      <span>Ruolo: {{role}}</span>
+							    </div>
+							</div>
+							{{/each}}
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="masonry-item col-md-6">
+				<div class="card" id="info">
+					<div class="card-body">
+						<div class="card-title spaced">
+							<h3>Informazioni</h3>
+							<a class="fa fa-edit title-icon" href="/project/{{project.entityKey.id}}/settings"></a>
+						</div>
+						<dl class="row">
+							<dt class="col-sm-4">Stato</dt>
+							<dd class="col-sm-8">
+								{{#projectStatus project.status}}
+								<span class="text-{{style}}">
+									<i class="fa {{icon}}"></i>
+									{{text}}
+								</span>
+								{{/projectStatus}}
+							</dd>
+							<dt class="col-sm-4">Data creazione</dt>
+							<dd class="col-sm-8">{{dateLocale project.dateCreation}}</dd>
+							<dt class="col-sm-4">Ultima modifica</dt>
+							<dd class="col-sm-8">{{dateLocale project.lastEdit}}</dd>
+							<dt class="col-sm-4">Descrizione</dt>
+							<dd class="col-sm-8">
+								{{#if project.description}}
+								{{project.description}}
+								{{else}}
+								<span class="text-muted">Nessuna descrizione.</span>
+								{{/if}}
+							</dd>
+						</dl>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+<script type="text/javascript">
+function toggleSidebar(selector) {
+	const button = $('.sidebar-btn');
+	const sidebar = $(selector);
+	const sidenav = $('#mainSidebar');
+	const arrow = $('i', button);
+	if (sidebar.css('transform') === 'none') {
+		sidebar.css('transform', 'translateX(-210px)');
+		sidenav.css('box-shadow', 'none');
+		button.css('color', 'black');
+		button.css('background-color', '#F0F0F0');
+		arrow.toggleClass('fa-chevron-left fa-chevron-right');
+	} else {
+		sidebar.css('transform', 'none');
+		sidenav.css('box-shadow', '2px 0 4px rgba(0,0,0,0.12), 0 2px 3px rgba(0,0,0,0.24)');
+		button.css('color', 'white');
+		button.css('background-color', '#868E96');
+		arrow.toggleClass('fa-chevron-left fa-chevron-right');
+	}
+}
+
+$(function () {
+	$('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+
+<script src="/js/clickableRow.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+
+<script src="/js/chart.js"></script>
+
+<script type="text/javascript">
+const graphData = {{{json graphData}}};
+
+function pad(n) {
+	return (n < 10 ? `0${n}` : n);
+}
+
+function dateMonthDay(context) {
+	const date = new Date(context);
+	return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}`;
+}
+
+const dataPos = {
+    ...graphDataOpts,
+    label: '# Problemi risolti',
+    backgroundColor: 'rgba(0, 255, 0, 0.5)',
+    borderColor: 'rgb(0, 255, 0)',
+    data: graphData.solved,
+		lineTension: 0,
+};
+const dataNeg = {
+    ...graphDataOpts,
+    label: '# Problemi',
+    backgroundColor: 'rgba(255, 0, 0, 0.5)',
+    borderColor: 'rgb(255, 0, 0)',
+    data: graphData.problems,
+		lineTension: 0,
+};
+const data = {
+    labels: graphData.labels.map(d => dateMonthDay(d)),
+    datasets: [dataPos, dataNeg],
+};
+
+if (dataPos.data.length == 1) {
+    dataPos.data.push(dataPos.data[0]);
+    dataNeg.data.push(dataNeg.data[0]);
+    data.labels.push(data.labels[0]);
+}
+
+const graficoElem = document.querySelector('#graficoStandUp');
+const graficoStandUp = new Chart(graficoElem, { ...graphOpts, data });
+</script>
+
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+
+<script type="text/javascript">
+var $grid = $('.corpo').masonry({
+	itemSelector: '.masonry-item',
+	columnWidth: '.masonry-item',
+	percentPosition: true,
+	horizontalOrder: true,
+});
+</script>

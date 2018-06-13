@@ -1,0 +1,50 @@
+@startuml
+'!include base.puml
+skinparam componentStyle uml2
+skinparam style strictuml
+skinparam rankSep 40
+
+node Client {
+	node "Web browser" as Browser
+}
+
+node Server {
+	node "Express.js" {
+		[Router]
+		node AJarvis {
+			[Controllers]
+			[TextMining]
+			[Views]
+			node Commands
+
+			Views --> Controllers
+			Controllers <-- Commands
+			Commands <-- TextMining
+		}
+	}
+	[gstore-node] as GStore
+}
+
+cloud "Google Cloud" as GCP {
+	[Speech] as STT
+	[Natural Language] as NL
+}
+
+cloud "Google Cloud" {
+    node Storage as ST
+    database Datastore as DS
+    ST -[hidden]- DS
+}
+
+Browser -> Router : HTTP Request
+Router -> Controllers
+Browser <- Controllers : HTTP Response
+
+Controllers - GStore
+GStore -- TextMining
+GStore <-> DS
+Controllers <-> ST : Recording files
+TextMining -- STT
+TextMining -- NL
+
+@enduml

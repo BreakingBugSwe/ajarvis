@@ -1,0 +1,33 @@
+@startuml
+!include base.puml
+
+actor Client
+participant Router
+participant "req : Request" as Request
+participant "res : Response" as Response
+control "project.js (controller)" as Controller
+participant ProjectModel
+
+Client ->> Router : POST "projects/saveNew"
+activate Router
+Router ->> Request : <<create>>
+Router ->> Response : <<create>>
+Router ->> Controller : saveNew(req, res)
+activate Controller
+activate ProjectModel
+Controller -> ProjectModel : create(req.body.projectData)
+Controller ->> ProjectModel : validate()
+ProjectModel -->> Controller : validatedEntity
+Controller ->> ProjectModel : save()
+ProjectModel -->> Controller : savedEntity
+deactivate ProjectModel
+activate Response
+Controller ->> Response : redirect("projects/newProjectId")
+deactivate Controller
+Response -->> Router
+deactivate Response
+Router -->> Client : pagina HTML
+deactivate Router
+
+
+@enduml

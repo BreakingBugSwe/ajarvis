@@ -1,0 +1,68 @@
+@startuml
+!include base.puml
+class Home {
+ - New Project
+ - Project list
+ - Settings
+ - Trash
+}
+
+class Settings {
+  - Min recording length
+  - Max recording length
+  - Default project sorting
+  - Edit roles
+  - Text mining keywords
+}
+
+class Trash {
+  - Empty trash
+  - Deleted elements list
+  - Restore element
+}
+
+class New_Project {
+  - Name
+  - Description
+  - Components
+  - Role for components
+}
+
+class Project {
+  - Graphs
+  - Problems
+  - Project settings
+  - Record Stand-up
+  - Stand-up list
+  - Collaborator list
+  - Details
+  - Delete project
+}
+
+class Stand_up {
+  - Details
+  - Problems
+  - Completed Tasks
+  - Recognized Collaborator
+  - Text
+  - Play recording
+  - Edit text
+  - Delete stand-up
+}
+
+class Project_Settings {
+  - Edit name
+  - Edit description
+  - Edit collaborator
+  - Edit keyword
+  - Edit state
+}
+
+Home --> Settings
+Home -l> Trash
+Home -> New_Project
+Home --> Project
+Project --> Stand_up
+Project --> Project_Settings
+
+@enduml

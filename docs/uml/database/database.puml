@@ -1,0 +1,59 @@
+' @file UML del Database
+' Data creazione: 2018-04-15
+' @version 0.0.1
+' @author  Tommaso Sotte
+
+@startuml
+
+' Style
+skinparam classAttributeIconSize 0
+' skinparam monochrome true
+skinparam defaultFontName Arial
+skinparam noteFontSize 10
+' skinparam linetype ortho
+skinparam style strictuml
+hide empty members
+
+skinparam note {
+	BackgroundColor White
+	BorderColor Black
+}
+
+' NOTE: È PIÙ UN DIAGRAMMA A PACKAGES CHE CLASSI!
+' potrebbe essere utile per visualizzare come si collegano i componenti però
+
+package "Google Cloud Datastore" as GCD {
+	class Datastore <<singleton>>
+}
+
+package "gstore-node" as GStore {
+	class Model
+	class Schema
+
+	Model o--> Schema
+}
+
+package "Model" as MyModel {
+	class ProjectModel
+	class RecordingModel
+
+	' class RecordingSchema
+	' class ProjectSchema
+}
+
+Client -right-> RecordingModel
+Client -right-> ProjectModel
+
+' I *Model sono delle istanze specifiche della classe gstore::Model
+Model <|-left- RecordingModel
+Model <|-- ProjectModel
+' E definiscono al loro interno uno schema, anch'esso un istanza di Schema.
+' Schema <|.. ProjectSchema
+' Schema <|.. RecordingSchema
+
+Model o-right-> Datastore
+RecordingModel -[hidden]- ProjectModel
+' RecordingModel *-> RecordingSchema
+' ProjectModel *-> ProjectSchema
+
+@enduml

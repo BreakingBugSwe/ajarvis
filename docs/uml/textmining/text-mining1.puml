@@ -1,0 +1,26 @@
+@startuml
+
+(*)-l-> "Partizionamento\n in frasi"
+-l-> "Ricoscimento\ncollaboratori"
+-l->"Conteggio parole\n significative"
+-->"Determinazione\n tipologia frase"
+note left
+problema risolto,
+problema, task
+completato,
+continuazione
+o da ignorare
+end note
+-->"Controllo\n dipendenza frase"
+if "Frase indipendente?"
+-->[true] "Tipologia:\n principale"
+else
+-->[false] "Tipologia:\n secondaria"
+"Tipologia:\n principale"-->"Assegnazione\n tipologia"
+"Tipologia:\n secondaria"-->"Assegnazione\n tipologia"
+-r-> if "Input\n consumato?" then
+-r->[true] (*)
+else
+--> [false] "Conteggio parole\n significative"
+
+@enduml

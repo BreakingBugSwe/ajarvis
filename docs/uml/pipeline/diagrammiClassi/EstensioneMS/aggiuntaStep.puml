@@ -1,0 +1,12 @@
+@startuml
+!include ../../../base.puml
+
+interface INewStep <<interface>>{
+  +newOperation()
+}
+
+class ConcreteNewStep implements INewStep{
+  +newOperation()
+}
+
+@enduml

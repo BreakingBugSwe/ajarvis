@@ -1,0 +1,85 @@
+<main class="container">
+	{{#if project}}
+	<div class="row" style="margin-bottom: 1em">
+		<div class="col">
+			<a class="btn btn-sm btn-outline-secondary" href="/project/{{project.entityKey.id}}">
+				<i class="fas fa-arrow-circle-left"></i>
+				<strong>{{project.name}}</strong>
+			</a>
+		</div>
+	</div>
+	{{/if}}
+
+	<div class="row">
+		<div class="col">
+			<div class="card" >
+				<div class="card-body">
+					<div class="card-title spaced">
+						<h2>Stand-up</h2>
+
+						<form method="get" action="{{url}}" class="form-inline mb-2">
+							<div class="input-group mr-sm-2">
+								<div class="class input-group-prepend">
+									<div class="input-group-text">Da</div>
+								</div>
+								<input type="date" class="form-control" name="from" value="{{dateInput interval.from}}">
+							</div>
+							<div class="input-group mr-sm-2">
+								<div class="class input-group-prepend">
+									<div class="input-group-text">A</div>
+								</div>
+								<input type="date" class="form-control" name="to" value="{{dateInput interval.to}}">
+							</div>
+							<button type="submit" class="btn btn-primary">Limita</button>
+						</form>
+					</div>
+					<table class="table table-striped table-hover text-center">
+						<thead class="thead-dark">
+							<tr>
+								<th>Data creazione</th>
+								<th>Progetto</th>
+								<th>Soluzioni</th>
+								<th>Problemi</th>
+								<th>Task completati</th>
+							</tr>
+						</thead>
+						<tbody>
+							{{#unless standups}}
+							<tr class="text-center">
+								<td colspan="4" class="italic">
+									Nessuna standup trovata
+									da {{dateOnlyDate interval.from}}
+									a {{dateOnlyDate interval.to}}.
+								</td>
+							</tr>
+							{{/unless}}
+
+							{{#each standups}}
+							<tr class="clickable-row" data-href='/project/{{project.id}}/recording/{{id}}'>
+								<th scope="row">
+									<a href='/project/{{project.id}}/recording/{{id}}'>
+										{{#processState processState}}
+										<span class="badge badge-pill badge-{{style}}">
+											<i class="fa {{icon}}"></i>
+										</span>
+										{{/processState}}
+										{{dateDateHours dateCreation}}
+									</a>
+								</th>
+								<td>
+									<a href="/project/{{project.id}}">{{project.name}}</a>
+								</td>
+								<td>{{solved}}</td>
+								<td>{{problems}}</td>
+								<td>{{tasks}}</td>
+							</tr>
+							{{/each}}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+
+<script src="/js/clickableRow.js"></script>

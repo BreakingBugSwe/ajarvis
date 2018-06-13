@@ -1,0 +1,270 @@
+<main class="container-fluid">
+	<div class="row justify-content-end">
+		<div class="sidebar col-lg-2 bg-secondary d-flex" id="mainSidebar">
+			<nav class="sidenav nav d-flex flex-column flex-grow-1 text-white">
+				<div class="sidenav-head text-center">
+					<a class="nav-link" href="/project/{{project.entityKey.id}}">
+						<i class="fas fa-arrow-circle-left"></i>{{project.name}}
+					</a>
+					<h4 class="projTitle">Stand-up {{dateOnlyDate recording.dateCreation}}</h4>
+
+					{{#processState recording.processState}}
+					<span class="badge badge-pill badge-{{style}}">
+						{{text}}
+						<i class="fa {{icon}}"></i>
+					</span>
+					{{/processState}}
+				</div>
+				<div class="sidenav-separator"></div>
+				<div class="sidenav-body">
+					<a class="nav-link" href="#problems"><i class="fa fa-times-circle"></i>Problemi</a>
+					<a class="nav-link" href="#solvedProblems"><i class="fas fa-chart-area"></i>Problemi risolti</a>
+					<a class="nav-link" href="#tasks"><i class="fa fa-check-circle"></i>Task completati</a>
+					<a class="nav-link" href="#text"><i class="fas fa-align-left"></i>Testo</a>
+					<a class="nav-link" href="#collaborators"><i class="fa fa-user-circle"></i>Partecipanti</a>
+					<a class="nav-link" href="#play"><i class="fas fa-play-circle"></i>Riproduzione</a>
+					<a class="nav-link" href="#others"><i class="fas fa-archive"></i>Altre frasi</a>
+				</div>
+				<div class="sidenav-separator"></div>
+				<div class="sidenav-footer">
+					<a class="nav-link nav-link-info" href="{{audio.link}}" download><i class="fas fa-cloud-download-alt"></i>Download audio</a>
+					<a class="nav-link" data-toggle="modal" data-target="#reTrans" href=""><i class="fas fa-file-audio"></i>Riesegui trascrizione</a>
+					<a class="nav-link" data-toggle="modal" data-target="#reMine" href=""><i class="fas fa-file-alt"></i>Riesegui Text mining</a>
+					<div class="sidenav-separator"></div>
+					<a class="nav-link nav-link-danger" data-toggle="modal" data-target="#delete" href=""><i class="fa fa-trash"></i>Elimina stand-up</a>
+				</div>
+			</nav>
+			<button class="sidebar-btn btn" onclick="toggleSidebar('#mainSidebar')">
+				<i class="fa fa-chevron-right"></i>
+			</button>
+		</div>
+
+		<div class="corpo col-lg-10">
+			<div class="masonry-item col-md-6">
+				<div class="card phrases-list text-white bg-danger" id="problems">
+					<div class="card-body">
+						<div class="card-title d-flex justify-content-between">
+							<h3>Problemi</h3>
+
+							<i class="title-icon fa fa-question-circle" data-toggle="tooltip"
+								data-placement="top" title="Problemi discussi durante durante lo standup."></i>
+						</div>
+
+						{{> phrasesList
+							phrases=problems
+						}}
+					</div>
+				</div>
+			</div>
+
+			<div class="masonry-item col-md-6">
+				<div class="card phrases-list text-white bg-success" id="solvedProblems">
+					<div class="card-body">
+						<div class="card-title d-flex justify-content-between">
+							<h3>Problemi risolti</h3>
+
+							<i class="title-icon fa fa-question-circle" data-toggle="tooltip"
+								data-placement="top" title="Problemi risolti rilevati durante lo standup."></i>
+						</div>
+
+						{{> phrasesList
+							phrases=solvedProblems
+						}}
+					</div>
+				</div>
+			</div>
+
+			<div class="masonry-item col-md-6">
+				<div class="card phrases-list text-white bg-primary" id="tasks">
+					<div class="card-body">
+						<div class="card-title d-flex justify-content-between">
+							<h3>Task completati</h3>
+
+							<i class="title-icon fa fa-question-circle" data-toggle="tooltip"
+								data-placement="top" title="Task completati rilevati durante lo standup."></i>
+						</div>
+
+						{{> phrasesList
+							phrases=completedTasks
+						}}
+					</div>
+				</div>
+			</div>
+
+			<div class="masonry-item col-md-6">
+				<form class="card" method="post" action="/project/{{recording.projectId}}/recording/{{recording.entityKey.id}}/editTranscription" id="text">
+					<div class="card-body">
+						<h3 class="card-title"><label for="inputTranscript">Testo</label></h3>
+						<textarea type="text" class="form-control" name="transcript" id="inputTranscript" rows="10" placeholder="Testo trascritto dello stand-up..." required readonly autocomplete="off">{{recording.transcript}}</textarea>
+						<input id="backupTranscript" type="hidden" value="{{recording.transcript}}" />
+					</div>
+					<div class="card-footer">
+						<button type="button" class="btn btn-outline-primary float-right" id="editButton">
+							<i class="fa fa-edit"></i>
+							Modifica
+						</button>
+						<button type="button" class="btn btn-outline-danger" id="abortButton" data-toggle="modal" data-target="#abort" hidden>
+							<i class="fa fa-undo"></i>
+							Annulla
+						</button>
+						<button type="submit" class="btn btn-primary float-right" id="saveButton" hidden>
+							<i class="fa fa-save"></i>
+							Salva
+						</button>
+					</div>
+				</form>
+			</div>
+
+			<div class="masonry-item col-md-6">
+				<div class="card" id="collaborators">
+					<div class="card-body">
+						<h3 class="card-title">Partecipanti</h3>
+						<div class="list-group">
+							{{#unless authors}}
+								<p class="list-group-item list-group-item-action flex-column align-items-start">Nessun collaboratore riconosciuto.</p>
+							{{/unless}}
+							{{#each authors}}
+								<p class="list-group-item list-group-item-action flex-column align-items-start align-bottom">{{this}}</p>
+							{{/each}}
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="masonry-item col-md-6">
+				<div class="card" id="play">
+					<div class="card-body">
+						<h3 class="card-title">Riproduzione</h3>
+						<audio src="{{audio.link}}" controls controlsList="nodownload" style="width:100%"></audio>
+					</div>
+				</div>
+			</div>
+
+			<div class="masonry-item col-md-6">
+				<div class="card phrases-list" id="others">
+					<div class="card-body">
+						<div class="card-title d-flex justify-content-between">
+							<h3>Altre frasi</h3>
+
+							<i class="title-icon fa fa-question-circle" data-toggle="tooltip"
+								data-placement="top" title="Altri frasi rilevate durante lo standup."></i>
+						</div>
+
+						{{> phrasesList
+							phrases=others
+						}}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+
+{{> modal
+	modalId="abort"
+	modalTitle="Annullamento modifiche"
+	modalText="Proseguendo tutte le modifiche effettuate andranno perse."
+	rButtonClass="btn-outline-danger"
+	rButtonIcon="fa-undo"
+	rButtonText="Annulla"
+    rButtonId="cancelButton"
+}}
+
+{{> modal
+	modalId="reTrans"
+	modalTitle="Riesegui trascrizione"
+	modalText="Proseguendo verrà effettuata nuovamente la trascrizione ed il text mining della registrazione dello stand-up. <br> Questo processo è irreversibile e le eventuali modifiche precedentemente fatte al testo verranno perse."
+	linkRButton=true
+	rButtonClass="btn-primary"
+	href=(concat "/project/" recording.projectId "/recording/" recording.entityKey.id "/redoTranscription")
+	rButtonText="Continua"
+}}
+
+{{> modal
+	modalId="reMine"
+	modalTitle="Riesegui text mining"
+	modalText="Proseguendo verrà effettuata nuovamente il text mining della trascrizione dello stand-up. <br> Questa operazione è irreversibile."
+	linkRButton=true
+	rButtonClass="btn-primary"
+	href=(concat "/project/" recording.projectId "/recording/" recording.entityKey.id "/redoTextMining")
+	rButtonText="Continua"
+}}
+
+{{> modal
+	modalId="delete"
+	modalTitle="Sposta nel cestino"
+	modalText="Proseguendo lo stand-up verrà spostato nel cestino del progetto, dove rimarrà per 30 giorni, salvo operaizoni manuali."
+	linkRButton=true
+	rButtonClass="btn-danger"
+	href=(concat "/project/" recording.projectId "/recording/" recording.entityKey.id "/delete")
+	rButtonIcon="fa-trash"
+	rButtonText="Sposta nel cestino"
+}}
+
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+
+<script type="text/javascript">
+var $grid = $('.corpo').masonry({
+	itemSelector: '.masonry-item',
+	columnWidth: '.masonry-item',
+	percentPosition: true,
+	horizontalOrder: true,
+});
+</script>
+
+<script type="text/javascript">
+$(function () {
+	$('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+
+<script>
+$(document).ready(function(){
+	$("#editButton").click(function(){
+		$("#saveButton").prop("hidden",false);
+		$("#abortButton").prop("hidden",false);
+		$("#editButton").prop("hidden",true);
+		$("#inputTranscript").prop("readonly", false);
+	});
+
+	$('#cancelButton').click(function() {
+		// Ripristina il testo corrente
+		$('#inputTranscript').val($('#backupTranscript').val());
+		$("#saveButton").prop("hidden",true);
+		$("#abortButton").prop("hidden",true);
+		$("#editButton").prop("hidden",false);
+		$("#inputTranscript").prop("readonly", true);
+		$('#abort').modal('hide');
+	});
+
+	$('#trashButton').click(function() {
+		window.location(`/project/${req.project.id}/`)
+	})
+});
+</script>
+
+<script type="text/javascript">
+function toggleSidebar(selector) {
+	const button = $('.sidebar-btn');
+	const sidebar = $(selector);
+	const sidenav = $('#mainSidebar');
+	const arrow = $('i', button);
+	if (sidebar.css('transform') === 'none') {
+		sidebar.css('transform', 'translateX(-210px)');
+		sidenav.css('box-shadow', 'none');
+		button.css('color', 'black');
+		button.css('background-color', '#F0F0F0');
+		arrow.toggleClass('fa-chevron-left fa-chevron-right');
+	} else {
+		sidebar.css('transform', 'none');
+		sidenav.css('box-shadow', '2px 0 4px rgba(0,0,0,0.12), 0 2px 3px rgba(0,0,0,0.24)');
+		button.css('color', 'white');
+		button.css('background-color', '#868E96');
+		arrow.toggleClass('fa-chevron-left fa-chevron-right');
+	}
+}
+
+$(function () {
+	$('[data-toggle="tooltip"]').tooltip();
+});
+</script>

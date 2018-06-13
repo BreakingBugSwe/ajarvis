@@ -1,0 +1,83 @@
+# https://cloud.google.com/datastore/docs/tools/indexconfig
+# https://cloud.google.com/datastore/docs/concepts/indexes#unindexed_properties
+
+# Comandi:
+
+# Cambiare il proj target (basta la prima volta):
+# gcloud config set project ajarvis-alpha
+
+# Aggiornare l'indice con questo file:
+  # gcloud datastore create-indexes index.yaml
+
+# Rimuovere da Datastore tutti gli indici non contenuti qui dentro:
+# gcloud datastore cleanup-indexes index.yaml
+
+indexes:
+
+# Suggerito dalla query della home:
+# per vedere i progetti aperti, non cancellati, in ordine di ultima modifica
+# - kind: project
+#  properties:
+#  - name: deleted
+#  - name: status
+#  - name: lastEdit
+#    direction: desc
+
+# progetti non cancellati in ordine di ultima modifica
+- kind: project
+  properties:
+  - name: deleted
+  - name: lastEdit
+    direction: desc
+
+# progetti non cancellati in ordine di status
+- kind: project
+  properties:
+  - name: deleted
+  - name: status
+    direction: desc
+
+# progetti non cancellati in ordine di creazione
+- kind: project
+  properties:
+  - name: deleted
+  - name: dateCreation
+    direction: desc
+
+# progetti non cancellati ordinati per nome
+- kind: project
+  properties:
+  - name: deleted
+  - name: name
+    direction: desc
+
+
+# RECORDING: non cancellati di un project ordinati per ordine creazione
+- kind: recording
+  properties:
+  - name: deleted
+  - name: projectId
+  - name: dateCreation
+    direction: desc
+
+# RECORDING: non cancellati, di un progetto, con un certo stato
+- kind: recording
+  properties:
+  - name: deleted
+  - name: processState
+  - name: projectId
+  - name: dateCreation
+
+# RECORDING: non cancellati di un project ordinati per ordine creazione
+- kind: recording
+  properties:
+  - name: deleted
+  - name: dateCreation
+    direction: desc
+
+# RECORDING: cestino in ordine di eliminazione
+- kind: recording
+  properties:
+  - name: projectId
+  - name: deleted
+    direction: desc

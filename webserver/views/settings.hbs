@@ -1,0 +1,74 @@
+<main class="container">
+	{{#if failed}}
+	<div class="alert alert-warning">
+		<strong>Impostazioni non valide.</strong> {{failed}}<br>
+		Le nuove impostazioni non veranno salvata e saranno ripristinate le impostazioni precedenti.
+	</div>
+	{{/if}}
+
+	<form class="card" method="post">
+		<div class="card-body" id="formBody">
+			<h2 class="card-title">Impostazioni</h2>
+			<div class="form-group row">
+				<label for="inputMinDuration" class="col-md-3 col-form-label">Durata minima stand-up</label>
+				<div class="col-md-9">
+					<input type="number" class="form-control" id="inputMinDuration" value="{{data.min_recording_length}}" name="minDuration" min="30" max="1800" placeholder="120" required>
+					<small class="form-text text-muted">
+						Inserire la durata minima di una registrazione in secondi. Se durasse meno verrebbe scartata.
+					</small>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="inputMaxDuration" class="col-md-3 col-form-label">Durata massima stand-up</label>
+				<div class="col-md-9">
+					<input type="number" class="form-control" id="inputMaxDuration" value="{{data.max_recording_length}}" name="maxDuration" min="60" max="4000" placeholder="2000" required>
+					<small class="form-text text-muted">
+						Inserire la durata massima in secondi. Se durasse di più verrebbe scartata.
+					</small>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="inputSorting" class="col-md-3 col-form-label">Ordinamento lista progetti</label>
+				<div class="col-md-9">
+					<select id="inputSorting" class="form-control" name="sorting">
+						<option value="{{data.projects_sorting_order}}" selected>{{sortingProject data.projects_sorting_order}} (attuale)</option>
+
+						{{#each sortSettings}}
+						<option value="{{this}}">{{sortingProject this}}</option>
+						{{/each}}
+					</select>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="inputRoles" class="col-md-3 col-form-label">Ruoli disponibili</label>
+				<div class="col-md-9">
+					<textarea type="text" class="form-control" id="inputRoles" name="roles" rows="4" placeholder="Ruolo1; Ruolo2" required>{{list data.project_roles}}</textarea>
+					<small class="form-text text-muted">
+						Inserire i ruoli separati da un ";".
+					</small>
+				</div>
+			</div>
+		</div>
+		<div class="card-footer">
+			<button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#abort">
+				<i class="fa fa-undo"></i>
+				Annulla
+			</button>
+			<button type="submit" class="btn btn-primary float-right" id="saveSettings">
+				<i class="fa fa-save"></i>
+				Salva
+			</button>
+		</div>
+	</form>
+</main>
+
+{{> modal
+	modalId="abort"
+	modalTitle="Annullamento modifiche"
+	modalText="Proseguendo tutte le modifiche effettuate andranno perse."
+	linkRButton=true
+	rButtonClass="btn-danger"
+	href="/"
+	rButtonIcon="fa-undo"
+	rButtonText="Annulla le modifiche"
+}}

@@ -1,0 +1,15 @@
+@startuml
+!include ../../base.puml
+together {
+  class Route
+  class CommandQueue {
+      +addCommand(Command)
+  }
+
+  interface Command<<interface>>
+
+  Route -r-> CommandQueue
+  CommandQueue o-r->  Command
+}
+
+@enduml

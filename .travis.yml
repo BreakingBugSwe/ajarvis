@@ -1,0 +1,26 @@
+# Docs per il setup e config di .travis.yml
+# https://github.com/dwyl/learn-travis
+# http://www.codeblocq.com/2016/04/Setup-Travis-CI-with-your-node-project/
+# https://docs.travis-ci.com/user/languages/javascript-with-nodejs/
+# https://docs.travis-ci.com/user/customizing-the-build/#The-Build-Lifecycle
+
+language: node_js
+node_js:
+  - "8"
+env:
+  - NODE_ENV=testing
+cache:
+  directories:
+    - "node_modules"
+    - "webserver/node_modules"
+addons:
+  sonarcloud:
+    organization: "breakingbugswe-github"
+    token:
+        secure: "RzGkoFf6T79Qu93QN7kpKVFZOh0j0sMmmiXkdU8V/FrLJW58g61K52oX+XPCiHZ/kOxGpHpdnJNLZeyVf2n0/lknKZjyFFygZ0a1ZU8l9W1mX9tpJ0YKjyGNcnx5nHG5+BuDCrIXc0oOnA9ttJVLWxjNjOr4MiGvaLjCpglsfJ/IqSi8nPvTVE9hF3dTkwhTfBR4G37k5KZ+0kTdjvbojcZtEXI2A9Zg2kaSJae+t14Lp5abcJDXu/2xK6BjpqgFInc6xyv7S4lQ5ipWK12hrSx2rX8pRP3UIl6AefcSMvFuJZjHJnyJre9+SBE+7yA24LSIzO4MLRa8evRW0ms46ztqsw37MBNEAITrxKW4PPWf7TiUA9ykzo200JRbXP8fHmGLrX8gWokuk8Yk+qUD+IzFuEcAfeB1uRnIfIZ4jt1MYI9XAqyaj7U7MmDag/OH8305xvMYUJ1lQess+OzUZm/74pnWhVTmmyFEC7af+ytufvWNSLz6OqlXXgkuNzX+EPXy7JGILqqVwPbcT217CwvorEtISQ0YSmdeJp8TJTKZY6yIeGzOjjjceq9KwOCJz/2Wah77FgQ7GgEz7P9aQEHJo00hPR4n/Z58K1Fpdp6B6kp82+aGtgGKZ0Q2VAE8IuOHJlAnI/ug7N+Sn8ZZ/zjRzVt6Rxa9Ll4VmUrdodQ="
+script:
+  # other script steps might be done before running the actual analysis
+  - sonar-scanner
+  - cd webserver && npm test
+notifications:
+   slack: breakingbugswe:gG6c5o8Sdf1KlOK77aimov5x

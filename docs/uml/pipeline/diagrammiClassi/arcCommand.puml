@@ -1,0 +1,59 @@
+@startuml
+!include ../../base.puml
+together {
+  interface Command <<interface>>{
+      +execute()
+  }
+
+  class TextminingCommand implements Command{
+      -recordingId:Id
+      +execute()
+  }
+  class SpeechToTextCommand implements Command{
+      -recordingId:Id
+      +execute()
+  }
+  class SaveToStorageCommand implements Command{
+      -filename:String
+      +execute()
+  }
+
+  class EditKeywordCommand implements Command{
+      -projectId:Id
+      -keywordId:Id
+      -newKeyword:String
+      +execute()
+  }
+
+  class EditTranscriptionCommand implements Command{
+      -recordingId:Id
+      -newTranscription:String
+      +execute()
+  }
+
+  interface ITextminingStep<<interface>>{
+  }
+
+  interface ISpeechToTextStep<<interface>>{
+  }
+  interface ISaveToStorageStep<<interface>>{
+  }
+  interface IEditKeywordsStep<<interface>>{
+  }
+  interface IEditTranscriptionStep<<interface>>{
+  }
+
+  TextminingCommand --> ITextminingStep
+  SpeechToTextCommand --> ISpeechToTextStep
+      SpeechToTextCommand --> ITextminingStep
+  SaveToStorageCommand --> ISaveToStorageStep
+      SaveToStorageCommand --> ISpeechToTextStep
+      SaveToStorageCommand --> ITextminingStep
+  EditKeywordCommand --> IEditKeywordsStep
+      EditKeywordCommand --> ITextminingStep
+  EditTranscriptionCommand --> IEditTranscriptionStep
+      EditTranscriptionCommand --> ITextminingStep
+
+
+}
+@enduml

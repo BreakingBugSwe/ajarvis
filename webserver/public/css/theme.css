@@ -1,0 +1,344 @@
+/* Generici */
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #F0F0F0;
+}
+
+main {
+  padding: 1em 0;
+}
+
+/*
+    Riassume le classi bootstrap: d-flex, justify-space-between, align-items-center
+    Usata per titoli/intestazioni con i bottoni ad esempio
+ */
+
+.spaced {
+	display: flex;
+	justify-content: space-between;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.clickable-row {
+  cursor: pointer;
+}
+
+/* Card */
+/* https://codepen.io/sdthornton/pen/wBZdXq
+Card 1 */
+
+.card {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.card-title {
+  margin-bottom: 0.65em;
+}
+
+.card-footer {
+  background-color: white;
+}
+
+.card:hover {
+  box-shadow: 0 7px 14px rgba(0,0,0,0.25), 0 5px 5px rgba(0,0,0,0.22);
+}
+
+/* NAVBAR */
+
+.navbar {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 2px 3px rgba(0,0,0,0.24);
+  min-height: 60px;
+}
+
+.AJlogo img {
+  width: 150px;
+  margin-right: 0.4em;
+}
+
+.nav-item i {
+  padding-right: 0.5em;
+}
+
+.nav-item {
+    border-bottom: 2px solid transparent;
+}
+
+a.nav-link {
+    color: white;
+}
+
+.allProj:hover {
+  border-bottom: 2px solid white;
+}
+
+
+.newProject:hover {
+  border-bottom: 2px solid #00ff00;
+}
+
+.newProject:hover i {
+  color: #00ff00;
+}
+
+.settings:hover {
+  border-bottom: 2px solid #007bff;
+}
+
+.navbar-nav .settings:hover .nav-link {
+  color: #007bff;
+}
+
+.trash:hover {
+  border-bottom: 2px solid #ff0000;
+}
+
+.trash:hover i {
+  color: #ff0000;
+}
+
+/* HOME */
+
+/* PROGETTO */
+
+/* SIDEBAR */
+
+.sidebar {
+  display: flex;
+  overflow-x: hidden;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  padding: 62px 0 0 0;
+  width: 242px;
+  min-width: 242px;
+  transform: translateX(-210px);
+  transition: transform 0.15s ease-in;
+}
+
+.sidebar + .corpo {
+    flex-basis: calc(100% - 32px);
+}
+
+/* col-lg min-size */
+@media (min-width: 992px) {
+    .sidebar {
+        transform: none !important;
+        min-width: 0;
+        box-shadow: 2px 0 4px rgba(0,0,0,0.12), 0 2px 3px rgba(0,0,0,0.24);
+    }
+
+    .sidebar-btn {
+        display: none;
+    }
+
+    .sidebar + .corpo {
+        flex-basis: 100%;
+    }
+
+    .sidebar {
+        width: 100%;
+    }
+}
+
+.sidebar-btn {
+  color: black;
+  width: 32px;
+  border: 0;
+  background-color: #F0F0F0;
+  border-radius: 0;
+}
+
+.sidenav {
+  padding: 1em 0;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+
+.sidenav a {
+  color: lightgray;
+  border-right: 2px solid transparent;
+}
+
+.sidenav a:hover {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-right: 2px solid white;
+  border-radius: 0;
+}
+
+.sidenav .nav-link .fa,
+.sidenav .nav-link .fas {
+  padding-right: 0.5em;
+}
+
+.sidenav-separator {
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+    margin: 0.75em 0;
+}
+
+.sidenav-body {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 100px;
+    overflow-y: auto;
+}
+
+.sidenav-header,
+.sidenav-footer {
+    flex-grow: 0;
+}
+
+.nav-link-success:hover i {
+  color: #00ff00;
+}
+
+.nav-link-success:hover {
+  border-right: 2px solid #00ff00 !important;
+}
+
+.nav-link-info:hover i {
+  color: #007bff;
+}
+
+.nav-link-info:hover {
+  border-right: 2px solid #007bff !important;
+}
+
+.nav-link-danger:hover i {
+  color: #ff0000;
+}
+
+.nav-link-danger:hover {
+  border-right: 2px solid #ff0000 !important;
+}
+
+/* CORPO */
+
+.corpo {
+  padding: 0;
+}
+
+.corpo .card {
+  margin-bottom: 1em;
+}
+
+.bg-danger {
+  background-color: #FF2A19 !important;
+}
+
+.text-white .list-colored-card {
+  background-color: rgba(255, 255, 255, 0.075);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.text-white .list-colored-card:hover,
+.text-white .list-colored-card:active {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.text-white .list-group-item {
+    color: white;
+}
+
+/* Header */
+
+.intestazione {
+  margin: 1em 0;
+}
+
+.descrBtn {
+  font-size: 1em;
+  margin-top: 0.2em;
+}
+
+.arrow {
+  padding-left: 0.5em;
+}
+
+.card-title .title-icon {
+    opacity: 0.6;
+}
+
+a.title-icon {
+    text-decoration: none;
+}
+
+.card-title .title-icon:hover {
+    opacity: 0.9;
+}
+
+.phrases-list .text:first-letter {
+    text-transform: uppercase;
+}
+
+.modal-phrasesList .modal-header {
+    border-bottom: 0;
+}
+
+/* Recorder */
+
+/* Bottoni */
+
+/* Bottoni con icona all'interno */
+.btn-group .fa {
+  padding-right: 0.4em;
+}
+
+.fa-times {
+  font-size: 130%;
+}
+
+#recorder p {
+  padding-top: 0.5em;
+  color: gray;
+}
+
+/* Tabella stand-up */
+
+.pos {
+  border-bottom: 2px solid #00ff00 !important;
+}
+
+.neg {
+  border-bottom: 2px solid #ff0000 !important;
+}
+
+.collaboratori {
+  flex-wrap: wrap;
+  display: flex;
+}
+
+.collaboratori li {
+  flex: 1 0 50%;
+}
+
+/* Elimina */
+
+.elimina {
+  margin-top: 2em;
+}
+
+/* STANDUP */
+
+/* TRASH */
+
+/* Row grid: margini fra le colonne */
+
+.row-grid [class*="col-"] + [class*="col-"] {
+    margin-top: 15px;
+}
+
+@media (min-width: 992px) {
+    .row.row-grid [class*="col-lg-"] + [class*="col-lg-"] {
+        margin-top: 0;
+    }
+}

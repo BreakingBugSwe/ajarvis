@@ -1,0 +1,135 @@
+<main class="container">
+	<div class="row" style="margin-bottom: 1em">
+		<div class="col">
+			<a class="btn btn-sm btn-outline-secondary" href="/project/{{project.entityKey.id}}">
+				<i class="fas fa-arrow-circle-left"></i>
+				<strong>{{project.name}}</strong>
+			</a>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col">
+			{{#if failed}}
+			<div class="alert alert-danger">
+				<strong>Fallita operazione nel cestino.</strong>
+				{{failed}}
+			</div>
+			{{/if}}
+
+			<div class="card">
+				<div class="card-body">
+					<div class="card-title spaced">
+						<h2>{{title}}</h2>
+						<div>
+							<button type="submit" class="btn btn-outline-success" id="unTrash" disabled>
+								<i class="fa fa-undo"></i>
+								Ripristina
+							</button>
+							<button type="submit" class="btn btn-outline-danger" id="emptyTrash" data-toggle="modal" data-target="#delete" disabled>
+								<i class="fa fa-times"></i>
+								Elimina
+							</button>
+						</div>
+					</div>
+					<table class="table table-striped table-hover text-center">
+						<thead class="thead-dark">
+							<tr>
+								<th scope="col" style="width: 5%">
+									<input type="checkbox" id="checkAll" title="Seleziona tutti" ondragover="Seleziona tutti" />
+								</th>
+								<th scope="col" class="text-left">Data stand-up</th>
+								<th scope="col" style="width: 20%">Data eliminazione</th>
+							</tr>
+						</thead>
+						<tbody>
+							{{#unless trash}}
+							<tr class="text-center">
+								<td colspan="4" class="italic">Nessuno stand-up nel cestino</td>
+							</tr>
+							{{/unless}}
+							{{#each trash}}
+							<tr>
+								<th scope="row">
+									<input class="projectBox" type="checkbox" value="{{id}}" title="Seleziona lo stand-up"/>
+								</th>
+								<th scope="row" class="text-left">{{dateDateHours dateCreation}}</th>
+								<td>{{dateOnlyDate deleted}}</td>
+							</tr>
+							{{/each}}
+							<input id="checkedProj" name="selected" type="hidden" value="" />
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</main>
+
+{{> modal
+	modalId="delete"
+	modalTitle="Elimina definitivamente"
+	modalText="Proseguendo tutti gli stand-up selezionati saranno eliminati definitivamente e non sarà possibile ripristinarli."
+	rButtonClass="btn-danger"
+	rButtonId="deleteTrash"
+	rButtonText="Elimina"
+}}
+
+<script>
+// => "id1;id2;id3"
+function getSelected() {
+	return $('input:checkbox:checked')
+		.map(function(i, $e) {
+			return $($e).attr('value');
+		})
+		.get()
+		.join(';');
+}
+
+function sendSelected(uri) {
+	const req = new XMLHttpRequest();
+	req.onload = () => window.location.reload(true);
+	req.open('POST', uri, true);
+	req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	req.send('selected='+getSelected());
+}
+
+$(document).ready(() => {
+	$('#deleteTrash').click(() => {
+		sendSelected('/project/{{project.entityKey.id}}/trash/delete');
+	});
+
+	$('#unTrash').click(() => {
+		sendSelected('/project/{{project.entityKey.id}}/trash/untrash');
+	});
+});
+
+// fonte: `https://stackoverflow.com/questions/18537609/jquery-checkbox-check-all`
+// seleziona/deselez tutti i checkbox della pagina
+$("#checkAll").click(function() {
+	$('input:checkbox').not(this).prop('checked', this.checked);
+	if (this.checked) {
+		$('#emptyTrash').removeAttr('disabled');
+		$('#unTrash').removeAttr('disabled');
+	} else {
+		$('#emptyTrash').attr('disabled', 'disabled');
+		$('#unTrash').attr('disabled', 'disabled');
+	}
+});
+
+// disattiva i pulsanti Elimina e Ripristina se i checkbox non sono selezionati e viceversa
+$(function() {
+  $('.projectBox').click(function() {
+    if ($('.projectBox:checked').length > 0) {
+      $('#emptyTrash').removeAttr('disabled');
+			$('#unTrash').removeAttr('disabled');
+    } else {
+      $('#emptyTrash').attr('disabled', 'disabled');
+			$('#unTrash').attr('disabled', 'disabled');
+			$("#checkAll").prop('checked', false); // toglie il check a checkAll se sono stati tolti tutti i check
+    }
+  });
+});
+</script>

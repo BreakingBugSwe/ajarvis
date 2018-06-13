@@ -1,0 +1,25 @@
+@startuml
+ [-> aSpeechToTextStep: transcribe(RecordingElement):RecordingElement
+activate aSpeechToTextStep
+aSpeechToTextStep -> aSpeechToTextStep: requestSpeechToTextAnalysis()
+activate aSpeechToTextStep
+aSpeechToTextStep -> aRecordingModel: getFilename():String
+activate aRecordingModel
+aRecordingModel --> aSpeechToTextStep: filename
+deactivate aRecordingModel
+aSpeechToTextStep -> aSpeechToTextStep: buildSpeechRequest(filename:String)
+activate aSpeechToTextStep
+aSpeechToTextStep --> aSpeechToTextStep: request
+deactivate aSpeechToTextStep
+aSpeechToTextStep -> SpeechToText: recognize(request)
+activate SpeechToText
+SpeechToText --> aSpeechToTextStep: result
+deactivate SpeechToText
+aSpeechToTextStep -> aRecordingModel: getId()
+activate aRecordingModel
+aRecordingModel --> aSpeechToTextStep: id
+deactivate aRecordingModel
+aSpeechToTextStep --> anotherRecordingModel: new RecordingElement(id:Id,filename:String,transcription:String)
+aSpeechToTextStep -> Repository: store(RecordingElement)
+activate Repository
+@enduml

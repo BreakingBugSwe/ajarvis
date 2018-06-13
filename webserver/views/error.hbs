@@ -1,0 +1,28 @@
+<main class="container">
+	<div class="alert alert-warning text-center">
+		<h1>Servizi temporaneamente non disponibili</h1>
+		<p>
+			<strong>
+				C'è stato un errore in AJarvis: "<span class="text-monospace">{{error.message}}</span>".
+			</strong>
+			<br>
+			Provate a riavviare il server.
+            <br>
+            Se il problema persiste contattate il team BreakingBug tramite la email: breakingbug.swe@gmail.com.
+		</p>
+
+		<hr>
+
+		{{#if referer}}
+		<a class="btn btn-warning" href="{{referer}}">
+			<i class="fa fa-arrow-left"></i>
+			Torna alla pagina precedente
+		</a>
+		{{/if}}
+
+		<a class="btn btn-warning" href="/">
+			<i class="fa fa-home"></i>
+			Torna alla homepage
+		</a>
+	</div>
+</main>

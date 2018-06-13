@@ -1,0 +1,18 @@
+@startuml
+activate aSaveToStorageCommand
+aSaveToStorageCommand -> aSaveToStorageStep: saveRecording(filename:String):RecordingModel
+  activate aSaveToStorageStep
+
+aSaveToStorageStep --> aSaveToStorageCommand: aRecordingModel
+deactivate aSaveToStorageStep
+
+aSaveToStorageCommand -> aSpeechToTextStep: transcribe(RecordingModel):RecordingModel
+activate aSpeechToTextStep
+aSpeechToTextStep --> aSaveToStorageCommand: aRecordingModel
+deactivate aSpeechToTextStep
+
+aSaveToStorageCommand -> aTextminingStep: textmine(RecordingModel):RecordingModel
+activate aTextminingStep
+aTextminingStep --> aSaveToStorageCommand: aRecordingModel
+deactivate aTextminingStep
+@enduml

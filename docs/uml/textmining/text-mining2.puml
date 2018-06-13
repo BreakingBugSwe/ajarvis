@@ -1,0 +1,13 @@
+@startuml
+
+(*) -r->"Conteggio argomenti"
+-r->"Analisi LDA\n sul testo"
+-->"Ricerca parole\n significative"
+-->"Calcolo punteggio\n parole significative"
+-->"Calcolo punteggio\n frasi collegate"
+-->"Calcolo punteggio\n frase totale"
+-r->if "Input\n consumato?" then
+-->[true] (*)
+else
+--> [false] "Ricerca parole\n significative"
+@enduml

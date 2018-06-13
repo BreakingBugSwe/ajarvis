@@ -1,0 +1,61 @@
+{
+  "name": "ajarvis-webserver",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "nodemon ./bin/www",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@google-cloud/datastore": "^1.3.4",
+    "@google-cloud/language": "^1.1.0",
+    "@google-cloud/speech": "^1.5.0",
+    "@google-cloud/storage": "^1.6.0",
+    "body-parser": "~1.18.2",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "^4.16.2",
+    "express-async-errors": "^2.1.2",
+    "express-validator": "^5.2.0",
+    "gstore-node": "^4.1.1",
+    "handlebars-helpers": "^0.10.0",
+    "handlebars-layouts": "^3.1.4",
+    "hbs": "^4.0.1",
+    "js-yaml": "^3.11.0",
+    "morgan": "~1.9.0",
+    "multer": "^1.3.0",
+    "serve-favicon": "~2.4.5",
+    "stdlib": "^0.6.0",
+    "stem-porter": "0.0.1",
+    "text-miner": "^1.0.5",
+    "winston": "^2.4.1"
+  },
+  "devDependencies": {
+    "jest": "~22.4.2",
+    "nodemon": "^1.15.1",
+    "proxyquire": "^2.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverage": true,
+    "coverageReporters": [
+      "lcov",
+      "html"
+    ],
+    "coverageDirectory": "coverage",
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/lib/utility/",
+      "<rootDir>/routes/testgcp/",
+      "<rootDir>/views/helpers/",
+      "<rootDir>/public/js/",
+      "<rootDir>/lib/model/ProjectModel.js",
+      "<rootDir>/lib/model/ProjectTrash.js",
+      "<rootDir>/lib/model/ProjectValidators.js",
+      "<rootDir>/lib/model/RecordingModel.js",
+      "<rootDir>/lib/model/RecordingTrash.js"
+    ]
+  },
+  "nodemonConfig": {
+    "ext": "js,hbs"
+  }
+}

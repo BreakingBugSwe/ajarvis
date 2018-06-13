@@ -1,0 +1,12 @@
+@startuml
+
+[-> aSaveToStorageStep: processing(String)
+  activate aSaveToStorageStep
+  aSaveToStorageStep -> RecordingStorage: upload(filename:String):String
+  activate RecordingStorage
+  RecordingStorage --> aSaveToStorageStep:fileReference
+  deactivate RecordingStorage
+  aSaveToStorageStep --> aRecordingElement: new RecordingElement(filename:String)
+  aSaveToStorageStep -> GStore: store(RecordingElement)
+activate GStore
+@enduml
