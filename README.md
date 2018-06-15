@@ -160,7 +160,7 @@ Riferitevi sempre alla documentazione in Node.js. Il primo link è la documentaz
 
 ### JS ed ES6+
 
-Express è il backend ed è scritto e gira su Node.js, il quale supporta ES6+, cioè è JS ma moderno. Per cominciare vi elenco alcune guide:
+Express.js è utilizzato per il backend e gira su Node.js, il quale supporta ES6+, cioè la versione moderna di JavaScript. Per cominciare vi elenco alcune guide:
 
 - [Tutorial base](https://www.airpair.com/javascript/node-js-tutorial): è abbastanza completo come tutorial, ma l'unico modo che ho trovato utile e cercare su internet ogni volta che non capite qualcosa, tanto è vasto l'argomento:
     - Internet (es. StackOverflow (obv), Quora, medium, hackernews, ecc)
@@ -168,11 +168,9 @@ Express è il backend ed è scritto e gira su Node.js, il quale supporta ES6+, c
 - ["Cos'è ES6 (o ES2015)?"](https://babeljs.io/learn-es2015/): se conoscete già JS base.
     - ["Callback -> Promise -> Async/Await: cosa sono e come funzionano"](https://www.toptal.com/javascript/asynchronous-javascript-async-await-tutorial): utile per capire i concetti di callback, Promise, async/await per Node.js.
 
-Non capite come funzioni qualcosa? Provatelo al volo, con il comando `node` (console interattiva) o fate uno script temporaneo ed eseguitelo con `node nome-script.js`.
-
 ### Express
 
-Express è come PHP e oltre, governa tutto il lato backend del server. Tramite il `ruoter` gestisce i path delle pagine disponibili. Ogni ruote ha le proprie richieste (request) e risposte (response).
+Express è il framework che governa tutto il lato backend del server. Tramite il `ruoter` gestisce i path delle pagine disponibili. Ogni ruote ha le proprie richieste (request) e risposte (response).
 
 - [API](https://expressjs.com/en/4x/api.html)
     - [req (Request)](https://expressjs.com/en/4x/api.html#req)
